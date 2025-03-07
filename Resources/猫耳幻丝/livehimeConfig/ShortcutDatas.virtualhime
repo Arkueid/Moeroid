@@ -1,0 +1,97 @@
+{
+  "SwitchMode": 0,
+  "RemoveAllExpKeys": [
+    0,
+    0,
+    0
+  ],
+  "MotionShortcutKeyDatas": {
+    "motions/idle.motion3.json": {
+      "MotionName": "motions/idle.motion3.json",
+      "IsEnable": true,
+      "IsGlobal": true,
+      "PlayMaxTime": 0.0,
+      "Mode": 0,
+      "Keys": [
+        0,
+        0,
+        0
+      ],
+      "FadeDuration": 0.5
+    }
+  },
+  "ExpShortcutKeyDatas": {
+    "expressions/hongyun.exp3.json": {
+      "ExpName": "expressions/hongyun.exp3.json",
+      "IsEnable": true,
+      "IsGlobal": true,
+      "Keys": [
+        0,
+        0,
+        0
+      ],
+      "Mode": 1,
+      "FadeDuration": 0.5
+    },
+    "expressions/yanzhao.exp3.json": {
+      "ExpName": "expressions/yanzhao.exp3.json",
+      "IsEnable": true,
+      "IsGlobal": true,
+      "Keys": [
+        0,
+        0,
+        0
+      ],
+      "Mode": 1,
+      "FadeDuration": 0.5
+    },
+    "expressions/zishi.exp3.json": {
+      "ExpName": "expressions/zishi.exp3.json",
+      "IsEnable": true,
+      "IsGlobal": true,
+      "Keys": [
+        0,
+        0,
+        0
+      ],
+      "Mode": 1,
+      "FadeDuration": 0.5
+    },
+    "momo.cfg_earSet": {
+      "ExpName": "momo.cfg_earSet",
+      "IsEnable": true,
+      "IsGlobal": true,
+      "Keys": [
+        0,
+        0,
+        0
+      ],
+      "Mode": 1,
+      "FadeDuration": 0.5
+    },
+    "momo.cfg_Param": {
+      "ExpName": "momo.cfg_Param",
+      "IsEnable": true,
+      "IsGlobal": true,
+      "Keys": [
+        0,
+        0,
+        0
+      ],
+      "Mode": 1,
+      "FadeDuration": 0.5
+    },
+    "momo.cfg_Param2": {
+      "ExpName": "momo.cfg_Param2",
+      "IsEnable": true,
+      "IsGlobal": true,
+      "Keys": [
+        0,
+        0,
+        0
+      ],
+      "Mode": 1,
+      "FadeDuration": 0.5
+    }
+  }
+}

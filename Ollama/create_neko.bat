@@ -1,0 +1,1 @@
+ollama create neko:qwen2.5-1.5b -f neko

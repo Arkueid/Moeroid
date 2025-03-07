@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "algorithm": "cpp",
+        "xlocmon": "cpp",
+        "xutility": "cpp"
+    }
+}

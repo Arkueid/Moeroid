@@ -1,0 +1,654 @@
+﻿{
+  "Version": 0,
+  "Name": "momo",
+  "FileReference": {
+    "Icon": "https://xk-live-cn-1302951512.cos.ap-guangzhou.myqcloud.com/xk_client/XKBC_AVATAR/RELEASE/347249/dd850eb560a595e0d208456a2b7112cb.png",
+    "Model": "D:\\Stream Data\\虚拟世界的幻丝哒~\\猫耳幻丝\\momo.model3.json"
+  },
+  "Transform": {
+    "Position": {
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.0
+    },
+    "Rotation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.0
+    },
+    "Scale": {
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.0
+    }
+  },
+  "PhysicsSetting": {
+    "Enable": true,
+    "Strength": 50
+  },
+  "CollideSetting": {
+    "Collides": [
+      {
+        "Position": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Radius": 0.2,
+        "Height": 1.0
+      }
+    ]
+  },
+  "PosMovementSetting": {
+    "Enable": false,
+    "X": 50,
+    "Y": 50,
+    "Z": 50
+  },
+  "CaptureSetting": {
+    "BlinkSensitivity": 50,
+    "BrowSensitivity": 50,
+    "SmileSensitivity": 50,
+    "OpenMouthSensitivity": 50,
+    "HeadRotationSensitivity": 50,
+    "BodyRotationSensitivity": 50,
+    "EyeBlinkMirror": false,
+    "BrowMirror": false,
+    "AutoEyeBlink": false
+  },
+  "ExpressionSetting": {
+    "ResetHotKey": "Shift L+1",
+    "Expressions": [
+      {
+        "Name": "hongyun",
+        "ExpFile": "expressions/hongyun.exp3.json",
+        "HotKey": "Ctrl L+1"
+      },
+      {
+        "Name": "yanzhao",
+        "ExpFile": "expressions/yanzhao.exp3.json",
+        "HotKey": "Ctrl L+2"
+      },
+      {
+        "Name": "zishi",
+        "ExpFile": "expressions/zishi.exp3.json",
+        "HotKey": "Ctrl L+3"
+      }
+    ]
+  },
+  "MotionSetting": {
+    "IdleMotionFile": "",
+    "NoCaptureMotionFile": "",
+    "Motions": []
+  },
+  "Parameters": [
+    {
+      "Enable": true,
+      "Input": "FaceAngleX",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamAngleX",
+      "OutputMin": -30.0,
+      "OutputMax": 30.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "FaceAngleY",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamAngleY",
+      "OutputMin": -30.0,
+      "OutputMax": 30.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "FaceAngleZ",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamAngleZ",
+      "OutputMin": -30.0,
+      "OutputMax": 30.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "FaceAngleX",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamBodyAngleX",
+      "OutputMin": -10.0,
+      "OutputMax": 10.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "FaceAngleY",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamBodyAngleY",
+      "OutputMin": -10.0,
+      "OutputMax": 10.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "FaceAngleZ",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamBodyAngleZ",
+      "OutputMin": -10.0,
+      "OutputMax": 10.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "EyeLOpen",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamEyeLOpen",
+      "OutputMin": 0.0,
+      "OutputMax": 1.5,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "EyeROpen",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamEyeROpen",
+      "OutputMin": 0.0,
+      "OutputMax": 1.5,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "EyeBallX",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamEyeBallX",
+      "OutputMin": -1.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "EyeBallY",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamEyeBallY",
+      "OutputMin": -1.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "BrowLY",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamBrowLY",
+      "OutputMin": -1.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "BrowRY",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamBrowRY",
+      "OutputMin": -1.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "BrowLForm",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamBrowLForm",
+      "OutputMin": 0.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "BrowRForm",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamBrowRForm",
+      "OutputMin": 0.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "MouthOpen",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamMouthOpenY",
+      "OutputMin": 0.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "MouthSmile",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamMouthForm",
+      "OutputMin": 0.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "MouthSmile",
+      "InputMin": -1.0,
+      "InputMax": 0.0,
+      "InputClamp": true,
+      "Output": "ParamEyeLSmile",
+      "OutputMin": 0.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "MouthSmile",
+      "InputMin": -1.0,
+      "InputMax": 0.0,
+      "InputClamp": true,
+      "Output": "ParamEyeRSmile",
+      "OutputMin": 0.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    },
+    {
+      "Enable": true,
+      "Input": "Breath",
+      "InputMin": -1.0,
+      "InputMax": 1.0,
+      "InputClamp": true,
+      "Output": "ParamBreath",
+      "OutputMin": 0.0,
+      "OutputMax": 1.0,
+      "OutputClamp": true,
+      "Smooth": 50,
+      "OutputInvert": false
+    }
+  ],
+  "DecorationSettings": {
+    "CurrentScheme": 0,
+    "DecorationSchemes": [
+      {
+        "Name": "默认方案",
+        "HotKey": "",
+        "Decorations": [
+          {
+            "Order": -1,
+            "Name": "猫尾-白",
+            "FileURI": "paster_14",
+            "DecorationType": 0,
+            "Is2DModel": false,
+            "IsAnimation": false,
+            "AnimationFPS": 0,
+            "IsMirrorX": false,
+            "IsMirrorY": false,
+            "IsVisiable": true,
+            "IsMovable": false,
+            "IsPinned": true,
+            "PinnedTo": "ArtMesh76",
+            "PinnedVertexIDs": [
+              26,
+              41,
+              27
+            ],
+            "PinnedVertexs": [
+              {
+                "X": 0.174862176,
+                "Y": -0.00632446865,
+                "Z": 0.0
+              },
+              {
+                "X": 0.09873838,
+                "Y": -0.0385249369,
+                "Z": 0.0
+              },
+              {
+                "X": 0.189026266,
+                "Y": -0.0966020748,
+                "Z": 0.0
+              }
+            ],
+            "BoundSize": {
+              "X": 0.295076668,
+              "Y": 0.416921824,
+              "Z": 0.0
+            },
+            "PinnedPos": {
+              "X": 0.1843279,
+              "Y": -0.204856753,
+              "Z": 0.0
+            },
+            "PinnedOffset": {
+              "X": 0.799021959,
+              "Y": -0.184473038,
+              "Z": -4.35525351E-07
+            },
+            "Scale": {
+              "X": 0.06842849,
+              "Y": 0.06842849,
+              "Z": 0.0684284642
+            },
+            "Rotation": {
+              "X": 0.0,
+              "Y": 0.0,
+              "Z": 1.26758754
+            }
+          },
+          {
+            "Order": 4,
+            "Name": "夏目之魂",
+            "FileURI": "paster_28",
+            "DecorationType": 0,
+            "Is2DModel": false,
+            "IsAnimation": false,
+            "AnimationFPS": 0,
+            "IsMirrorX": false,
+            "IsMirrorY": false,
+            "IsVisiable": true,
+            "IsMovable": false,
+            "IsPinned": true,
+            "PinnedTo": "ArtMesh3",
+            "PinnedVertexIDs": [
+              68,
+              53,
+              64
+            ],
+            "PinnedVertexs": [
+              {
+                "X": -0.107299544,
+                "Y": 0.172165126,
+                "Z": 0.0
+              },
+              {
+                "X": -0.08501566,
+                "Y": 0.168340251,
+                "Z": 0.0
+              },
+              {
+                "X": -0.09318224,
+                "Y": 0.207420915,
+                "Z": 0.0
+              }
+            ],
+            "BoundSize": {
+              "X": 0.293613434,
+              "Y": 0.132313251,
+              "Z": 0.0
+            },
+            "PinnedPos": {
+              "X": -0.110791706,
+              "Y": 0.130725265,
+              "Z": 0.0
+            },
+            "PinnedOffset": {
+              "X": 0.819014549,
+              "Y": 1.61201477,
+              "Z": 0.0
+            },
+            "Scale": {
+              "X": 0.0235355459,
+              "Y": 0.0235355459,
+              "Z": 0.0235355422
+            },
+            "Rotation": {
+              "X": 0.0,
+              "Y": 0.0,
+              "Z": 9.745461
+            }
+          },
+          {
+            "Order": 6,
+            "Name": "OK绷",
+            "FileURI": "paster_19",
+            "DecorationType": 0,
+            "Is2DModel": false,
+            "IsAnimation": false,
+            "AnimationFPS": 0,
+            "IsMirrorX": false,
+            "IsMirrorY": false,
+            "IsVisiable": true,
+            "IsMovable": false,
+            "IsPinned": true,
+            "PinnedTo": "ArtMesh5",
+            "PinnedVertexIDs": [
+              12,
+              11,
+              25
+            ],
+            "PinnedVertexs": [
+              {
+                "X": 0.0386124961,
+                "Y": 0.140763521,
+                "Z": 0.0
+              },
+              {
+                "X": 0.04792266,
+                "Y": 0.107770279,
+                "Z": 0.0
+              },
+              {
+                "X": 0.06368963,
+                "Y": 0.128582969,
+                "Z": 0.0
+              }
+            ],
+            "BoundSize": {
+              "X": 0.123514406,
+              "Y": 0.320076168,
+              "Z": 0.0
+            },
+            "PinnedPos": {
+              "X": 0.06434555,
+              "Y": 0.108071566,
+              "Z": 0.0
+            },
+            "PinnedOffset": {
+              "X": -0.10336566,
+              "Y": 0.193283081,
+              "Z": -2.33565629E-06
+            },
+            "Scale": {
+              "X": 0.0127597256,
+              "Y": 0.0127597256,
+              "Z": 0.0127597256
+            },
+            "Rotation": {
+              "X": 0.0,
+              "Y": 0.0,
+              "Z": 0.0764543861
+            }
+          },
+          {
+            "Order": 7,
+            "Name": "寄",
+            "FileURI": "paster_37",
+            "DecorationType": 0,
+            "Is2DModel": false,
+            "IsAnimation": true,
+            "AnimationFPS": 0,
+            "IsMirrorX": false,
+            "IsMirrorY": false,
+            "IsVisiable": true,
+            "IsMovable": false,
+            "IsPinned": true,
+            "PinnedTo": "ArtMesh43",
+            "PinnedVertexIDs": [
+              31,
+              33,
+              32
+            ],
+            "PinnedVertexs": [
+              {
+                "X": -0.03578011,
+                "Y": -0.196842939,
+                "Z": 0.0
+              },
+              {
+                "X": 0.0593428537,
+                "Y": -0.25235343,
+                "Z": 0.0
+              },
+              {
+                "X": 0.0533581935,
+                "Y": -0.183174655,
+                "Z": 0.0
+              }
+            ],
+            "BoundSize": {
+              "X": 0.689277053,
+              "Y": 0.7547202,
+              "Z": 0.0
+            },
+            "PinnedPos": {
+              "X": 0.005106638,
+              "Y": -0.195552588,
+              "Z": 0.0
+            },
+            "PinnedOffset": {
+              "X": -0.430016041,
+              "Y": -0.1522026,
+              "Z": -5.919454E-07
+            },
+            "Scale": {
+              "X": 0.0503464155,
+              "Y": 0.0503464155,
+              "Z": 0.05034641
+            },
+            "Rotation": {
+              "X": 0.0,
+              "Y": 0.0,
+              "Z": 357.429443
+            }
+          },
+          {
+            "Order": 8,
+            "Name": "加载中",
+            "FileURI": "paster_38",
+            "DecorationType": 0,
+            "Is2DModel": false,
+            "IsAnimation": true,
+            "AnimationFPS": 0,
+            "IsMirrorX": false,
+            "IsMirrorY": false,
+            "IsVisiable": true,
+            "IsMovable": false,
+            "IsPinned": true,
+            "PinnedTo": "ArtMesh6",
+            "PinnedVertexIDs": [
+              53,
+              98,
+              57
+            ],
+            "PinnedVertexs": [
+              {
+                "X": 0.004223067,
+                "Y": 0.0880299062,
+                "Z": 0.0
+              },
+              {
+                "X": 0.00269464171,
+                "Y": 0.07069722,
+                "Z": 0.0
+              },
+              {
+                "X": 0.0144262584,
+                "Y": 0.07072397,
+                "Z": 0.0
+              }
+            ],
+            "BoundSize": {
+              "X": 0.11375095,
+              "Y": 0.201324791,
+              "Z": 0.0
+            },
+            "PinnedPos": {
+              "X": 0.00546143344,
+              "Y": 0.06431389,
+              "Z": 0.0
+            },
+            "PinnedOffset": {
+              "X": -0.0270690918,
+              "Y": 0.4564476,
+              "Z": -1.19209312E-06
+            },
+            "Scale": {
+              "X": 0.025,
+              "Y": 0.025,
+              "Z": 0.025
+            },
+            "Rotation": {
+              "X": 0.0,
+              "Y": 0.0,
+              "Z": 358.353
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
