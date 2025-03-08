@@ -18,9 +18,6 @@ Input::Input()
 
     connect(ui.closeBtn, &QPushButton::clicked, this, &Input::close);
 
-    const QFont font("Arial", 12);
-    ui.editor->setFont(font);
-
     thread = new QThread();
     thread->start();
 
@@ -28,6 +25,8 @@ Input::Input()
     worker->moveToThread(thread);  // worker 的信号槽会在该线程中执行
 
     connect(worker, &LLMTTSWorker::textReceived, this, &Input::onTextReceived);
+
+    connect(worker, &LLMTTSWorker::textReceiveFinished, this, &Input::onTextReceiveFinished);
 
     output = new Output();
 }
@@ -64,6 +63,10 @@ void Input::onInput() const
 void Input::onTextReceived(QString text) const
 {
     output->show(text, anchor);
+}
+
+void Input::onTextReceiveFinished() const
+{
     ui.editor->clear();
     ui.sendBtn->setEnabled(true);
     ui.editor->setReadOnly(false);

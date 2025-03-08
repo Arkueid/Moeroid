@@ -2,6 +2,8 @@
     "files.associations": {
         "algorithm": "cpp",
         "xlocmon": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "future": "cpp",
+        "system_error": "cpp"
     }
 }

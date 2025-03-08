@@ -42,6 +42,7 @@ signals:
 
 public slots:
     void onTextReceived(QString text) const;
+    void onTextReceiveFinished() const;
 };
 
 inline void Input::setAnchor(QWidget* inAnchor)

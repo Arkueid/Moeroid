@@ -84,6 +84,7 @@ void PythonProcess::transferText(const char* text, void* callee, void (*onAudio)
         LipSync::start(bytes, length);
     }
 
+    onText(callee, nullptr);
     Info("llm text receive finished");
 }
 

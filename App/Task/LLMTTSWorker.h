@@ -8,6 +8,7 @@ class LLMTTSWorker : public QObject
 signals:
     void audioReceived(QByteArray array);
     void textReceived(QString text);
+    void textReceiveFinished();
 
 protected:
     void emitAudioReceived(unsigned char* bytes)
@@ -18,6 +19,11 @@ protected:
     void emitTextReceived(QString text)
     {
         emit textReceived(text);
+    }
+
+    void emitTextReceiveFinished()
+    {
+        emit textReceiveFinished();
     }
 
 public:

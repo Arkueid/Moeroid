@@ -9,6 +9,7 @@
 #include "Process/PythonProcess.h"
 #include "Win/Systray.h"
 
+#include <Live2DCubismCore.h>
 
 int main(int argc, char* argv[])
 {
@@ -17,7 +18,11 @@ int main(int argc, char* argv[])
     Csm::CubismFramework::Option option;
     LAppAllocator allocator;
     option.LogFunction = LAppPal::PrintLn;
+#ifdef _DEBUG
     option.LoggingLevel = Csm::CubismFramework::Option::LogLevel_Verbose;
+#else
+    option.LoggingLevel = Csm::CubismFramework::Option::LogLevel_Off;
+#endif
     Csm::CubismFramework::StartUp(&allocator, &option);
     Csm::CubismFramework::Initialize();
 

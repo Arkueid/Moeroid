@@ -19,6 +19,13 @@ void LLMTTSWorker::startWork(QString text)
                                 },
                                 [](void* callee, const char* text)
                                 {
-                                    static_cast<LLMTTSWorker*>(callee)->emitTextReceived(text);
+                                    if (text != nullptr)
+                                    {
+                                        static_cast<LLMTTSWorker*>(callee)->emitTextReceived(text);
+                                    }
+                                    else
+                                    {
+                                        static_cast<LLMTTSWorker*>(callee)->emitTextReceiveFinished();
+                                    }
                                 });
 }

@@ -5,7 +5,7 @@
 #include <QtGui/QPainterPath>
 #include "../Config/StickState.h"
 
-Output::Output(): font("Arial", 14),
+Output::Output(): font("Arial", 12),
                   metrics(font),
                   padding(10),
                   radius(10),

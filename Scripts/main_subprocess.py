@@ -71,8 +71,9 @@ def on_response(text: str):
         __text = t
 
 
-# model = "neko:qwen2.5-1.5b"
 model = "neko:qwen2.5-1.5b"
+# model = "neko:qwen2.5-0.5b"
+# model = "neko:gemma2-2b"
 history = []
 while True:
     try:

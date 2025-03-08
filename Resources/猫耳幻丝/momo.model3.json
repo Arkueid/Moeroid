@@ -6,7 +6,28 @@
 			"momo.4096/texture_00.png"
 		],
 		"Physics": "momo.physics3.json",
-		"DisplayInfo": "momo.cdi3.json"
+		"DisplayInfo": "momo.cdi3.json",
+		"Motions": {
+			"Idle": [
+				{
+					"File": "motions/idle.motion3.json"
+				}
+			]
+		},
+		"Expressions": [
+			{
+				"Name": "hongyun",
+				"File": "expressions/hongyun.exp3.json"
+			},
+			{
+				"Name": "yanzhao",
+				"File": "expressions/yanzhao.exp3.json"
+			},
+			{
+				"Name": "zishi",
+				"File": "expressions/zishi.exp3.json"
+			}
+		]
 	},
 	"Groups": [
 		{
