@@ -43,7 +43,7 @@ target_include_directories(${PROJECT_NAME}
     ${QTINC}
     ${PROJECT_ROOT}/Framework/src
     ${PROJECT_ROOT}/Core/include
-    ${PROJECT_ROOT}/glew/include
+    ${PROJECT_ROOT}/Glad/include
     ${PROJECT_ROOT}/Main/src
 )
 
@@ -53,9 +53,7 @@ target_link_libraries(${PROJECT_NAME}
     Qt6::Widgets
     Qt6::Gui
     Qt6::OpenGLWidgets 
-    glew_s
     Main
-    Framework
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -69,4 +67,10 @@ add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND
     ${CMAKE_PREFIX_PATH}/bin/windeployqt6.exe $<TARGET_FILE:${PROJECT_NAME}>
+)
+
+add_custom_command(TARGET ${PROJECT_NAME}
+    PRE_BUILD
+    COMMAND
+    ${CMAKE_PREFIX_PATH}/bin/uic.exe ${CMAKE_CURRENT_SOURCE_DIR}/UI/Input.ui -o ${CMAKE_CURRENT_SOURCE_DIR}/UI/Input.h
 )

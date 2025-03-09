@@ -33,7 +33,7 @@ public:
     {
         if (Input->objectName().isEmpty())
             Input->setObjectName("Input");
-        Input->resize(308, 56);
+        Input->resize(317, 43);
         QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -62,8 +62,11 @@ public:
 
         sendBtn = new QPushButton(Input);
         sendBtn->setObjectName("sendBtn");
-        sizePolicy1.setHeightForWidth(sendBtn->sizePolicy().hasHeightForWidth());
-        sendBtn->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Expanding);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(sendBtn->sizePolicy().hasHeightForWidth());
+        sendBtn->setSizePolicy(sizePolicy2);
         QIcon icon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentSend));
         sendBtn->setIcon(icon);
         sendBtn->setFlat(true);
@@ -72,8 +75,8 @@ public:
 
         closeBtn = new QPushButton(Input);
         closeBtn->setObjectName("closeBtn");
-        sizePolicy1.setHeightForWidth(closeBtn->sizePolicy().hasHeightForWidth());
-        closeBtn->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(closeBtn->sizePolicy().hasHeightForWidth());
+        closeBtn->setSizePolicy(sizePolicy2);
         QIcon icon1(QIcon::fromTheme(QIcon::ThemeIcon::WindowClose));
         closeBtn->setIcon(icon1);
         closeBtn->setFlat(true);

@@ -6,7 +6,6 @@
 
 class LAppModel;
 class Input;
-#include <QtGui/QOpenGLFunctions>
 
 #include "../Config/StickState.h"
 

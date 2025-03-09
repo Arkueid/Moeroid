@@ -55,6 +55,7 @@ void Input::onInput() const
     {
         return;
     }
+    ui.editor->setText("Speaking...");
     ui.sendBtn->setDisabled(true);
     ui.editor->setReadOnly(true);
     QMetaObject::invokeMethod(worker, "startWork", Qt::QueuedConnection, text);

@@ -86,7 +86,7 @@ LAppModel::~LAppModel()
     delete[] _tmpOrderedDrawIndices;
 }
 
-void LAppModel::LoadAssets(const csmChar *fileName)
+void LAppModel::LoadModelJson(const csmChar *fileName)
 {
     // linux 下不支持对 "XXX/XXX.model.json/../" 的解析
     // 因此改用 cpp17 的标准库
@@ -372,27 +372,10 @@ void LAppModel::Update()
     csmBool motionUpdated = false;
 
     //-----------------------------------------------------------------
-    if (_clearMotionFlag) 
+    _model->LoadParameters(); // 前回セーブされた状態を
+    if (!_motionManager->IsFinished())
     {
-        _clearMotionFlag = false;
-        _motionManager->StopAllMotions();
-        for (int i = 0; i < _parameterCount; i++)
-        {
-            _parameterValues[i] = _defaultParameterValues[i];
-        }
-        if (_pose)
-        {
-            _pose->Reset(_model);
-        }
-        Info("motion: cleared");
-    }
-    else
-    {
-        _model->LoadParameters(); // 前回セーブされた状態を
-        if (!_motionManager->IsFinished())
-        {
-            motionUpdated = _motionManager->UpdateMotion(_model, _deltaTimeSeconds); // モーションを更新
-        }
+        motionUpdated = _motionManager->UpdateMotion(_model, _deltaTimeSeconds); // モーションを更新
     }
     _model->SaveParameters(); // 状態を保存
     //-----------------------------------------------------------------
@@ -749,13 +732,13 @@ bool LAppModel::IsMotionFinished()
 void LAppModel::SetParameterValue(const char *paramId, float value, float weight)
 {
     const Csm::CubismId *paramHanle = CubismFramework::GetIdManager()->GetId(paramId);
-    _model->SetParameterValue(paramHanle, value, weight);
+    _model->SetAndSaveParameterValue(paramHanle, value, weight);
 }
 
 void LAppModel::AddParameterValue(const char *paramId, float value)
 {
     const Csm::CubismId *paramHanle = CubismFramework::GetIdManager()->GetId(paramId);
-    _model->AddParameterValue(paramHanle, value);
+    _model->AddAndSaveParameterValue(paramHanle, value);
 }
 
 void LAppModel::SetAutoBreathEnable(bool enable)
@@ -974,9 +957,26 @@ void LAppModel::Rotate(float deg)
     _matrixManager.Rotate(deg);
 }
 
-void LAppModel::ClearMotions()
+void LAppModel::StopAllMotions()
 {
-    _clearMotionFlag = true;
+    _motionManager->StopAllMotions();
+}
+
+void LAppModel::ResetParameters()
+{
+    for (int i = 0; i < _parameterCount; i++)
+    {
+        _parameterValues[i] = _defaultParameterValues[i];
+    }
+    _model->SaveParameters();
+}
+
+void LAppModel::ResetPose()
+{
+    if (_pose)
+    {
+        _pose->Reset(_model);
+    }
 }
 
 void LAppModel::ResetExpression()

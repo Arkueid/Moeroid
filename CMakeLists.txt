@@ -20,6 +20,8 @@ if (CMAKE_CL_64)
   add_link_options("/BASE:0x800000000")
 endif()
 
-
-add_subdirectory(Main)
+include(cmake/Glad.cmake)
+include(cmake/Core.cmake)
+include(cmake/Framework.cmake)
+include(cmake/Main.cmake)
 add_subdirectory(App)

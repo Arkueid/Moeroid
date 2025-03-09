@@ -1,15 +1,14 @@
-#include "LAppModel.hpp"
+#include <LAppModel.hpp>
+#include <LAppPal.hpp>
+#include <Log.hpp>
+#include <iostream>
 
 #include "Live2DWidget.h"
-
-#include <iostream>
 #include "Input.h"
-#include "LAppPal.hpp"
 #include "../LipSync/LipSync.h"
 
 #include <Windows.h>
 
-#include "Log.hpp"
 
 Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                leftButtonPressed(false),
@@ -89,9 +88,9 @@ StickState Live2DWidget::getStickState() const
 
 void Live2DWidget::initializeGL()
 {
-    glewInit();
+    gladLoadGL();
 
-    live2DModel->LoadAssets(modelJson.c_str());
+    live2DModel->LoadModelJson(modelJson.c_str());
 
     startTimer(1000 / 60);
 }
@@ -105,7 +104,7 @@ void Live2DWidget::paintGL()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-
+    
     live2DModel->Update();
 
     live2DModel->SetParameterValue("ParamMouthOpenY", LipSync::getMouthOpenY());
