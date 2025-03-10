@@ -11,10 +11,6 @@ Systray::Systray(): moeConfig(nullptr), menu(nullptr)
 Systray::~Systray()
 {
     delete menu;
-    for (QAction* action : actions)
-    {
-        delete action;
-    }
 }
 
 void Systray::initialize(MoeConfig* config)
@@ -25,18 +21,17 @@ void Systray::initialize(MoeConfig* config)
     setToolTip("Moeroid");
 
     menu = new QMenu();
-    QAction* stayOnTopAction = new QAction("置顶模式");
+    QAction* stayOnTopAction = new QAction("置顶模式", this);
     stayOnTopAction->setCheckable(true);
     stayOnTopAction->setChecked(moeConfig->getBoolean("stayOnTop"));
     connect(stayOnTopAction, &QAction::triggered, moeConfig, &MoeConfig::setStayOnTop);
-    actions.append(stayOnTopAction);
+    menu->addAction(stayOnTopAction);
 
-    QAction* quitAction = new QAction("退出");
+    QAction* quitAction = new QAction("退出", this);
     menu->addSeparator();
-    actions.append(quitAction);
+    menu->addAction(quitAction);
 
     connect(quitAction, &QAction::triggered, qApp, &QApplication::exit);
 
-    menu->addActions(actions);
     setContextMenu(menu);
 }

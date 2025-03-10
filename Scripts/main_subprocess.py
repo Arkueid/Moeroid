@@ -44,7 +44,9 @@ def on_response(text: str):
         t = t.replace("\n", "")
         logging.info("start tts: " + t)
         try:
+            # -- tts start--
             voice = vits_helper.tts(f"[ZH]{t}[ZH]", array=True, both=True)
+            # -- tts end--
             time.sleep(0.9)
             sounddevice.wait()  # block
             text_bytes = t.encode("utf-8")

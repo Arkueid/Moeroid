@@ -11,16 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from io import BytesIO
-from typing import Any
-
-from numpy import signedinteger, ndarray, dtype
-from numpy._typing import _16Bit
-
 from vits.text import text_to_sequence
 import numpy as np
 from scipy.io import wavfile
-import torch
 import json
 import vits.commons as commons
 import vits.utils as utils
@@ -86,37 +79,36 @@ def tts(text: str, array=False, both=False):
     if hps.data.add_blank:
         seq = commons.intersperse(seq, 0)
 
-    with torch.no_grad():
-        # use numpy to replace torch
-        x = np.array([seq], dtype=np.int64)
-        x_len = np.array([x.shape[1]], dtype=np.int64)
-        sid = np.array([sid], dtype=np.int64)
-        scales = np.array([0.667, 0.8, 1], dtype=np.float32)
-        scales.resize(1, 3)
+    
+    x = np.array([seq], dtype=np.int64)
+    x_len = np.array([x.shape[1]], dtype=np.int64)
+    sid = np.array([sid], dtype=np.int64)
+    scales = np.array([0.667, 0.8, 1], dtype=np.float32)
+    scales.resize(1, 3)
 
-        ort_inputs = {
-            'input': x,
-            'input_lengths': x_len,
-            'scales': scales,
-            'sid': sid
-        }
+    ort_inputs = {
+        'input': x,
+        'input_lengths': x_len,
+        'scales': scales,
+        'sid': sid
+    }
 
-        import time
-        start_time = time.perf_counter()
-        audio = np.squeeze(__ort_sess.run(None, ort_inputs))
-        audio *= 32767.0 / max(0.01, np.max(np.abs(audio))) * 0.6
-        audio = np.clip(audio, -32767.0, 32767.0).astype(np.int16)
-        end_time = time.perf_counter()
-        logging.info(f"tts time cost: {end_time - start_time} s")
+    import time
+    start_time = time.perf_counter()
+    audio = np.squeeze(__ort_sess.run(None, ort_inputs))
+    audio *= 32767.0 / max(0.01, np.max(np.abs(audio))) * 0.6
+    audio = np.clip(audio, -32767.0, 32767.0).astype(np.int16)
+    end_time = time.perf_counter()
+    logging.info(f"tts time cost: {end_time - start_time} s")
 
-        if array and not both:
-            return audio, hps.data.sampling_rate
-        
-        buffer = io.BytesIO()
-        wavfile.write(buffer,
-                    hps.data.sampling_rate, audio)
-        if not both:
-            with buffer:
-                return buffer.getvalue()
-        
-        return (audio, hps.data.sampling_rate), buffer
+    if array and not both:
+        return audio, hps.data.sampling_rate
+    
+    buffer = io.BytesIO()
+    wavfile.write(buffer,
+                hps.data.sampling_rate, audio)
+    if not both:
+        with buffer:
+            return buffer.getvalue()
+    
+    return (audio, hps.data.sampling_rate), buffer

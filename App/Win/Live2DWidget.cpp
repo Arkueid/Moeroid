@@ -2,6 +2,7 @@
 #include <LAppPal.hpp>
 #include <Log.hpp>
 #include <iostream>
+#include <Id/CubismIdManager.hpp>
 
 #include "Live2DWidget.h"
 #include "Input.h"
@@ -21,7 +22,8 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                framesThresholdRightPress(30),
                                leftClickX(0),
                                leftClickY(0),
-                               windowMoved(false)
+                               windowMoved(false),
+                               iParamMouthOpenY(-1)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -86,11 +88,18 @@ StickState Live2DWidget::getStickState() const
     return stickState;
 }
 
+typedef void(__stdcall *SwapInterval)(int);
+
 void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
     live2DModel->LoadModelJson(modelJson.c_str());
+
+    const Csm::CubismId* handle = Csm::CubismFramework::GetIdManager()->GetId("ParamMouthOpenY"); 
+    iParamMouthOpenY = live2DModel->GetModel()->GetParameterIndex(handle);
+
+    ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
 
     startTimer(1000 / 60);
 }
@@ -107,7 +116,7 @@ void Live2DWidget::paintGL()
     
     live2DModel->Update();
 
-    live2DModel->SetParameterValue("ParamMouthOpenY", LipSync::getMouthOpenY());
+    live2DModel->SetIndexParamValue(iParamMouthOpenY, LipSync::getMouthOpenY());
 
     live2DModel->Draw();
 }

@@ -14,6 +14,7 @@ class Live2DWidget : public QOpenGLWidget
     Q_OBJECT
 
     LAppModel* live2DModel;
+    int iParamMouthOpenY;
     std::string modelJson;
 
     bool cursorEntered; // 光标进入窗口

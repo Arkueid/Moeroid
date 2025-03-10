@@ -37,19 +37,19 @@ void MoeConfig::initializeConfig(QJsonObject& object)
 {
     object["stayOnTop"] = true;
     QJsonObject current;
-    current["name"] = "liveroid";
+    current["name"] = "猫耳幻丝";
     current["skin"] = 0;
     object["current"] = current;
-    QJsonArray array;
+    QJsonArray skins0;
     QJsonObject skin;
     skin["json"] = "liveroid/liveroiD_A-Y01/liveroiD_A-Y01.model3.json";
     skin["name"] = "双马尾";
-    array.append(skin);
+    skins0.append(skin);
     skin["json"] = "liveroid/liveroiD_A-Y02/liveroiD_A-Y02.model3.json";
     skin["name"] = "初始";
-    array.append(skin);
+    skins0.append(skin);
     QJsonObject liveroid;
-    liveroid["skins"] = array;
+    liveroid["skins"] = skins0;
     QJsonObject models;
     QJsonObject preferences;
     preferences["offsetX"] = 0.0f;
@@ -71,12 +71,28 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     preferences["windowWidth"] = 300;
     preferences["lipsyncN"] = 2;
     whitecat["preferences"] = preferences;
-    QJsonArray skins;
+    QJsonArray skins1;
     skin["name"] = "初始";
     skin["json"] = "whitecat/SDWhite cat free.model3.json";
-    skins.append(skin);
-    whitecat["skins"] = skins;
+    skins1.append(skin);
+    whitecat["skins"] = skins1;
     models["whitecat"] = whitecat;
+
+    QJsonObject moefans;
+    preferences["offsetX"] = 0.0f;
+    preferences["offsetY"] = 0.6f;
+    preferences["stickOffset"] = 45;
+    preferences["stickRotate"] = 45;
+    preferences["windowHeight"] = 500;
+    preferences["windowWidth"] = 400;
+    preferences["lipsyncN"] = 2;
+    moefans["preferences"] = preferences;
+    QJsonArray skins2;
+    skin["name"] = "初始";
+    skin["json"] = "猫耳幻丝/momo.model3.json";
+    skins2.append(skin);
+    moefans["skins"] = skins2;
+    models["猫耳幻丝"] = moefans;
     
     object["models"] = models;
     object["modelDir"] = "../../Resources";
@@ -85,7 +101,7 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     object["windowX"] = rect.width() / 3;
     object["windowY"] = rect.height() / 3;
 
-    object["command"] = "../../Runtime/pythonw.exe main_subprocess.py";
+    object["command"] = "../../Runtime/pythonw.exe ../../Scripts/main_subprocess.py";
 }
 
 bool MoeConfig::getBoolean(const char* key) const
