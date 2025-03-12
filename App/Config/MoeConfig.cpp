@@ -104,7 +104,7 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     object["command"] = "../../Runtime/pythonw.exe ../../Scripts/main_subprocess.py";
 }
 
-bool MoeConfig::getBoolean(const char* key) const
+bool MoeConfig::getBoolean(const QString& key) const
 {
     return moeJson[key].toBool();
 }
@@ -118,52 +118,60 @@ void MoeConfig::writeFile() const
     file.close();
 }
 
-QString MoeConfig::getString(const char* key) const
+QString MoeConfig::getString(const QString& key) const
 {
     return moeJson[key].toString();
 }
 
-int MoeConfig::getInt(const char* key) const
+int MoeConfig::getInt(const QString& key) const
 {
     return moeJson[key].toInt();
 }
 
-int MoeConfig::getPreferenceInt(const char* name, const char* key)
+int MoeConfig::getPreferenceInt(const QString& name, const QString& key)
 {
     return moeJson["models"].toObject()[name].toObject()["preferences"].toObject()[key].toInt();
 }
 
-int MoeConfig::getCurrentPreferenceInt(const char* key)
+int MoeConfig::getCurrentPreferenceInt(const QString& key)
 {
-    const std::string current = moeJson["current"].toObject()["name"].toString().toStdString();
-    return getPreferenceInt(current.c_str(), key);
+    const QString& current = moeJson["current"].toObject()["name"].toString();
+    return getPreferenceInt(current, key);
 }
 
-float MoeConfig::getCurrentPreferenceFloat(const char* key)
+float MoeConfig::getCurrentPreferenceFloat(const QString& key)
 {
-    const std::string name = moeJson["current"].toObject()["name"].toString().toStdString();
-    return getPreferenceFloat(name.c_str(), key);
+    const QString& name = moeJson["current"].toObject()["name"].toString();
+    return getPreferenceFloat(name, key);
 }
 
-float MoeConfig::getPreferenceFloat(const char* name, const char* key)
+float MoeConfig::getPreferenceFloat(const QString& name, const QString& key)
 {
     return moeJson["models"].toObject()[name].toObject()["preferences"].toObject()[key].toDouble();
 }
 
-QString MoeConfig::getModelJson(const char* name, int skin)
+QString MoeConfig::getModelJson(const QString& name, int skin)
 {
-    return moeJson["models"].toObject()[name].toObject()["skins"].toArray()[skin].toObject()["json"].toString();
+    return getString("modelDir").append("/") + moeJson["models"].toObject()[name].toObject()["skins"].toArray()[skin].toObject()["json"].toString();
 }
 
 QString MoeConfig::getCurrentModelJson()
 {
     QJsonObject current = moeJson["current"].toObject();
-    const std::string name = current["name"].toString().toStdString();
+    const QString& name = current["name"].toString();
     const int skin = current["skin"].toInt();
-    return getModelJson(name.c_str(), skin);
+    return getModelJson(name, skin);
 }
 
-void MoeConfig::setInt(const char* key, int value)
+QString MoeConfig::getCurrentModelDesc()
+{
+    const QJsonObject& obj = moeJson["current"].toObject();
+    const QString& name = obj["name"].toString();
+    const int skin = obj["skin"].toInt();
+    return name + ":" + moeJson["models"].toObject()[name].toObject()["skins"].toArray()[skin].toObject()["name"].toString();
+}
+
+void MoeConfig::setInt(const QString& key, int value)
 {
     moeJson[key] = value;
 }
@@ -171,6 +179,15 @@ void MoeConfig::setInt(const char* key, int value)
 QString MoeConfig::getCommand()
 {
     return moeJson["command"].toString();
+}
+
+void MoeConfig::setCurrent(const QString &name, const int skin)
+{
+    QJsonObject obj = moeJson["current"].toObject();
+    obj["name"] = name;
+    obj["skin"] = skin;
+    moeJson["current"] = obj;
+    emit currentModelChanged();
 }
 
 void MoeConfig::setStayOnTop(bool value)

@@ -7,7 +7,7 @@ class LLMTTSWorker : public QObject
 
 signals:
     void audioReceived(QByteArray array);
-    void textReceived(QString text);
+    void textReceived(const QString& text);
     void textReceiveFinished();
 
 protected:
@@ -16,7 +16,7 @@ protected:
         emit audioReceived(reinterpret_cast<char*>(bytes));
     }
 
-    void emitTextReceived(QString text)
+    void emitTextReceived(const QString& text)
     {
         emit textReceived(text);
     }

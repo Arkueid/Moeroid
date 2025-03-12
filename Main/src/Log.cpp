@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdarg>
 
+#ifndef MAIN_LOG_DISABLE
 bool live2dLogEnable = true;
 
 void Debug(const char *fmt, ...)
@@ -56,3 +57,4 @@ void Error(const char *fmt, ...)
         printf("\033[0m\n");
     }
 }
+#endif

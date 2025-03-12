@@ -7,6 +7,8 @@
         "system_error": "cpp",
         "chrono": "cpp",
         "variant": "cpp",
-        "qsystemtrayicon": "cpp"
+        "qsystemtrayicon": "cpp",
+        "charconv": "cpp",
+        "cstdio": "cpp"
     }
 }

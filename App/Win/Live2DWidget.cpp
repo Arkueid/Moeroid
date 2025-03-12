@@ -10,7 +10,6 @@
 
 #include <Windows.h>
 
-
 Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                leftButtonPressed(false),
                                rightButtonPressed(false),
@@ -23,18 +22,20 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                leftClickX(0),
                                leftClickY(0),
                                windowMoved(false),
-                               iParamMouthOpenY(-1)
+                               iParamMouthOpenY(-1),
+                               cursorEntered(false),
+                               cursorOnL2D(false),
+                               config(nullptr)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     setAttribute(Qt::WA_TranslucentBackground);
 
-    live2DModel = new LAppModel();
-
     input = new Input();
-
     input->setAnchor(this);
 
-    screenWidth = QGuiApplication::primaryScreen()->geometry().width();
+    const QRect& rect = QGuiApplication::primaryScreen()->geometry();
+    screenWidth = rect.width();
+    screenHeight = rect.height();
 
     configSaveTimer.setSingleShot(true);
     configSaveTimer.setInterval(2000);
@@ -54,30 +55,26 @@ Live2DWidget::~Live2DWidget()
     }
 }
 
-void Live2DWidget::initialize(MoeConfig *config)
+void Live2DWidget::initialize(MoeConfig* config)
 {
     this->config = config;
 
     setWindowFlag(Qt::WindowStaysOnTopHint, config->getBoolean("stayOnTop"));
     connect(config, &MoeConfig::stayOnTopChanged, this, [&](bool on)
-            {
+    {
         setWindowFlag(Qt::WindowStaysOnTopHint, on);
-        show(); });
-
-    modelJson = config->getString("modelDir")
-                    .append("/")
-                    .append(config->getCurrentModelJson())
-                    .toStdString();
-
-    resize(config->getCurrentPreferenceInt("windowWidth"), config->getCurrentPreferenceInt("windowHeight"));
-    stickRotate = config->getCurrentPreferenceFloat("stickRotate");
-    stickOffset = config->getCurrentPreferenceInt("stickOffset");
-
-    live2DModel->SetOffset(config->getCurrentPreferenceFloat("offsetX"),
-                           config->getCurrentPreferenceFloat("offsetY"));
+        show();
+    });
 
     move(config->getInt("windowX"), config->getInt("windowY"));
 
+    live2DModel = new LAppModel();
+    // restore preferences
+    resize(config->getCurrentPreferenceInt("windowWidth"), config->getCurrentPreferenceInt("windowHeight"));
+    stickRotate = config->getCurrentPreferenceFloat("stickRotate");
+    stickOffset = config->getCurrentPreferenceInt("stickOffset");
+    live2DModel->SetOffset(config->getCurrentPreferenceFloat("offsetX"),
+                           config->getCurrentPreferenceFloat("offsetY"));
     processStick();
 
     connect(&configSaveTimer, &QTimer::timeout, this, &Live2DWidget::saveConfig);
@@ -88,19 +85,19 @@ StickState Live2DWidget::getStickState() const
     return stickState;
 }
 
-typedef void(__stdcall *SwapInterval)(int);
+typedef void (__stdcall *SwapInterval)(int);
 
 void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
-    live2DModel->LoadModelJson(modelJson.c_str());
-
-    const Csm::CubismId* handle = Csm::CubismFramework::GetIdManager()->GetId("ParamMouthOpenY"); 
-    iParamMouthOpenY = live2DModel->GetModel()->GetParameterIndex(handle);
-
     ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
 
+    // load model assets
+    const std::string& path = config->getCurrentModelJson().toStdString();
+    live2DModel->LoadModelJson(path.c_str());
+    const Csm::CubismId* handle = Csm::CubismFramework::GetIdManager()->GetId("ParamMouthOpenY");
+    iParamMouthOpenY = live2DModel->GetModel()->GetParameterIndex(handle);
     startTimer(1000 / 60);
 }
 
@@ -113,7 +110,7 @@ void Live2DWidget::paintGL()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    
+
     live2DModel->Update();
 
     live2DModel->SetIndexParamValue(iParamMouthOpenY, LipSync::getMouthOpenY());
@@ -121,14 +118,56 @@ void Live2DWidget::paintGL()
     live2DModel->Draw();
 }
 
-void Live2DWidget::timerEvent(QTimerEvent *event)
+void Live2DWidget::timerEvent(QTimerEvent* event)
 {
-    const QPoint point = QCursor::pos();
-    const int mouseLocalX = point.x() - x();
-    const int mouseLocalY = point.y() - y();
+    const QPoint globalPosition = QCursor::pos();
+    const float mx = globalPosition.x();
+    const float my = globalPosition.y();
+    const int mouseLocalX = mx - x();
+    const int mouseLocalY = my - y();
     processTransparentForMouse(mouseLocalX, mouseLocalY);
 
-    live2DModel->Drag(mouseLocalX, mouseLocalY);
+    // 面部朝向点局部坐标
+    float ftx;
+    float fty;
+
+    const float wWidth = width();
+    const float wHeight = height();
+    // 窗口中心全局坐标
+    const float halfWW = wWidth / 2;
+    const float halfWH = wHeight / 2;
+    const float tcx = x() + halfWW;
+    const float tcy = y() + halfWH;
+    
+    
+    if (mx <= tcx)
+    {
+        if (my <= tcy) // 第二象限
+        {
+            ftx = mx / tcx * halfWW;
+            fty = my / tcy * halfWH;
+        }
+        else // 第三象限
+        {
+            ftx = mx / tcx * halfWW;
+            fty = (my - tcy) / (screenHeight - tcy) * halfWW + halfWW;
+        }
+    }
+    else
+    {
+        if (my <= tcy) // 第四象限
+        {
+            ftx = (mx - tcx) / (screenWidth - tcx) * halfWW + halfWW;
+            fty = (my - tcy) / (screenHeight - tcy) * halfWH + halfWH;
+        }
+        else // 第一象限
+        {
+            ftx = (mx - tcx) / (screenWidth - tcx) * halfWW + halfWW;
+            fty = my / tcy * halfWH;
+        }
+    }
+
+    live2DModel->Drag(ftx, fty);
 
     if (rightButtonPressed)
     {
@@ -138,7 +177,7 @@ void Live2DWidget::timerEvent(QTimerEvent *event)
     update(); // 更新画面
 }
 
-void Live2DWidget::mouseMoveEvent(QMouseEvent *event)
+void Live2DWidget::mouseMoveEvent(QMouseEvent* event)
 {
     if (leftButtonPressed)
     {
@@ -162,7 +201,7 @@ void Live2DWidget::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void Live2DWidget::mousePressEvent(QMouseEvent *event)
+void Live2DWidget::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -179,7 +218,7 @@ void Live2DWidget::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void Live2DWidget::mouseReleaseEvent(QMouseEvent *event)
+void Live2DWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {

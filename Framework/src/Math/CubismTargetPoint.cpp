@@ -10,7 +10,7 @@
 
 namespace Live2D { namespace Cubism { namespace Framework {
 
-const csmInt32      FrameRate = 30;
+const csmInt32      FrameRate = 60;
 const csmFloat32    Epsilon = 0.01f;
 
 CubismTargetPoint::CubismTargetPoint()

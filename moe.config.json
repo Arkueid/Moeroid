@@ -1,7 +1,7 @@
 {
     "command": "../../Runtime/pythonw.exe ../../Scripts/main_subprocess.py",
     "current": {
-        "name": "猫耳幻丝",
+        "name": "whitecat",
         "skin": 0
     },
     "modelDir": "../../Resources",
@@ -63,6 +63,6 @@
         }
     },
     "stayOnTop": true,
-    "windowX": 1675,
-    "windowY": 434
+    "windowX": 1760,
+    "windowY": 171
 }

@@ -7,7 +7,7 @@
 
 #include "Output.h"
 
-Input::Input()
+Input::Input(): backgroundColor("#FFD9E8")
 {
     ui.setupUi(this);
 
@@ -44,7 +44,7 @@ void Input::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     
-    painter.setBrush(Qt::black);
+    painter.setBrush(backgroundColor);
     painter.drawRoundedRect(this->rect(), 8, 8);
 }
 
@@ -61,7 +61,7 @@ void Input::onInput() const
     QMetaObject::invokeMethod(worker, "startWork", Qt::QueuedConnection, text);
 }
 
-void Input::onTextReceived(QString text) const
+void Input::onTextReceived(const QString& text) const
 {
     output->show(text, anchor);
 }
@@ -75,32 +75,28 @@ void Input::onTextReceiveFinished() const
 
 void Input::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::RightButton)
+    if (event->button() == Qt::LeftButton)
     {
-        rightButtonPressed = true;
+        leftButtonPressed = true;
         const QPointF pointF = event->globalPosition();
         rightClickedX = pointF.x();
         rightClickedY = pointF.y();
         xWhenRightClicked = x();
         yWhenRightClicked = y();
     }
-    else if (event->button() == Qt::LeftButton)
-    {
-        close();
-    }
 }
 
 void Input::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::RightButton)
+    if (event->button() == Qt::LeftButton)
     {
-        rightButtonPressed = false;
+        leftButtonPressed = false;
     }
 }
 
 void Input::mouseMoveEvent(QMouseEvent* event)
 {
-    if (rightButtonPressed)
+    if (leftButtonPressed)
     {
         const QPointF pointF = event->globalPosition();
         const int dx = pointF.x() - rightClickedX;

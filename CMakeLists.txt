@@ -23,5 +23,9 @@ endif()
 include(cmake/Glad.cmake)
 include(cmake/Core.cmake)
 include(cmake/Framework.cmake)
+
+add_compile_definitions(
+  $<$<CONFIG:RELEASE>:MAIN_LOG_DISABLE>
+)
 include(cmake/Main.cmake)
 add_subdirectory(App)

@@ -24,6 +24,8 @@ add_executable(${PROJECT_NAME}
     Config/MoeConfig.cpp
     Config/StickState.cpp
 
+    Util/CubismHelper.cpp
+
     logo.rc
 )
 

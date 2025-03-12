@@ -12,7 +12,7 @@ class Input : public QWidget
 {
     Ui::Input ui;
 
-    bool rightButtonPressed;
+    bool leftButtonPressed;
     int xWhenRightClicked;
     int yWhenRightClicked;
     int rightClickedX;
@@ -24,6 +24,8 @@ class Input : public QWidget
     Output* output;
 
     QWidget* anchor;
+
+    QColor backgroundColor;
 
 public:
     Input();
@@ -41,7 +43,7 @@ signals:
     void onInput() const;
 
 public slots:
-    void onTextReceived(QString text) const;
+    void onTextReceived(const QString& text) const;
     void onTextReceiveFinished() const;
 };
 

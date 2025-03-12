@@ -23,9 +23,49 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">border-radius: 8pt</string>
+   <string notr="true">/* 设置整体背景颜色 */
+QWidget {
+    background-color: #FFD9E8; /* 粉色背景 */
+}
+
+/* QLineEdit 样式 */
+QLineEdit {
+    border: 2px solid #F4A6B7; /* 边框颜色 */
+    border-radius: 10px; /* 圆角边框 */
+    padding: 5px; /* 内边距 */
+    background-color: #FFF3F8; /* 输入框背景颜色 */
+    color: #8C2C60; /* 文字颜色 */
+}
+
+/* 当输入框被选中时的样式 */
+QLineEdit:focus {
+    border-color: #FF6CC9; /* 更鲜艳的颜色突出显示 */
+    background-color: #FFECF3;
+}
+
+/* QPushButton 基础样式 */
+QPushButton {
+    border: 2px solid #F4A6B7; /* 边框颜色 */
+    border-radius: 10px; /* 圆角边框 */
+    padding: 5px 15px; /* 内边距 */
+    background-color: #FFBBD7; /* 按钮背景颜色 */
+    color: #FFFFFF; /* 文字颜色 */
+    font-weight: bold; /* 加粗字体 */
+}
+
+/* 当鼠标悬停在按钮上时 */
+QPushButton:hover {
+    background-color: #FF6CC9; /* 改变背景颜色 */
+}
+
+/* 当按钮被按下时 */
+QPushButton:pressed {
+    background-color: #D957A3; /* 更深的颜色表示按下状态 */
+}
+
+/* 添加图标或其他装饰元素（如果需要）可以在这里进行调整 */</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,16,4,4">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,16,4,4,1">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -110,6 +150,19 @@
       <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

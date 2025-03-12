@@ -8,23 +8,13 @@
 #include "LipSync/LipSync.h"
 #include "Process/PythonProcess.h"
 #include "Win/Systray.h"
+#include "Util/CubismHelper.hpp"
 
 #include <Live2DCubismCore.h>
 
 int main(int argc, char* argv[])
 {
     SetConsoleOutputCP(65001);
-    
-    Csm::CubismFramework::Option option;
-    LAppAllocator allocator;
-    option.LogFunction = LAppPal::PrintLn;
-#ifdef _DEBUG
-    option.LoggingLevel = Csm::CubismFramework::Option::LogLevel_Verbose;
-#else
-    option.LoggingLevel = Csm::CubismFramework::Option::LogLevel_Off;
-#endif
-    Csm::CubismFramework::StartUp(&allocator, &option);
-    Csm::CubismFramework::Initialize();
 
     QApplication app(argc, argv);
 
@@ -39,18 +29,28 @@ int main(int argc, char* argv[])
 
     LipSync::initialize(&moeConfig);
 
+    CubismHelper::Initialize();
     Live2DWidget* win = new Live2DWidget();
     win->initialize(&moeConfig);
     win->show();
+
+    QObject::connect(&moeConfig, &MoeConfig::currentModelChanged, [&]() {
+        win->close();
+        delete win;
+        CubismHelper::Dispose();  // 清除之前 OpenGL 上下文
+
+        CubismHelper::Initialize();
+        win = new Live2DWidget();
+        win->initialize(&moeConfig);
+        win->show();
+    });
 
     QApplication::exec();
 
     delete win;
     delete tray;
-    Live2D::Cubism::Framework::CubismFramework::Dispose();
 
     PythonProcess::dispose();
-
     LipSync::dispose();
     return 0;
 }

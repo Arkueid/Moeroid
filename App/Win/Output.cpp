@@ -44,7 +44,7 @@ void Output::mousePressEvent(QMouseEvent* event)
 }
 
 
-void Output::show(const QString inText, const QWidget* anchor)
+void Output::show(const QString& inText, const QWidget* anchor)
 {
     timer.stop();
     hide();

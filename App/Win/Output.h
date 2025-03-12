@@ -24,5 +24,5 @@ public:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
 
-    void show(const QString inText, const QWidget* anchor);
+    void show(const QString& inText, const QWidget* anchor);
 };

@@ -15,7 +15,6 @@ class Live2DWidget : public QOpenGLWidget
 
     LAppModel* live2DModel;
     int iParamMouthOpenY;
-    std::string modelJson;
 
     bool cursorEntered; // 光标进入窗口
     bool cursorOnL2D; // 光标在 live2d 角色上
@@ -39,6 +38,7 @@ class Live2DWidget : public QOpenGLWidget
     Input* input;
 
     int screenWidth;
+    int screenHeight;
 
     QTimer configSaveTimer;
 

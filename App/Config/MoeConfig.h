@@ -14,24 +14,34 @@ public:
     void loadFile(const char* filePath);
     static void initializeConfig(QJsonObject& object);
 
-    bool getBoolean(const char* key) const;
-    QString getString(const char* key) const;
-    int getInt(const char* key) const;
+    bool getBoolean(const QString& key) const;
+    QString getString(const QString& key) const;
+    int getInt(const QString& key) const;
     
-    int getPreferenceInt(const char* name, const char* key);
-    float getPreferenceFloat(const char* name, const char* key);
-    QString getModelJson(const char* name, int skin);
+    int getPreferenceInt(const QString& name, const QString& key);
+    float getPreferenceFloat(const QString& name, const QString& key);
+    QString getModelJson(const QString& name, int skin);
 
-    int getCurrentPreferenceInt(const char* key);
-    float getCurrentPreferenceFloat(const char* key);
+    int getCurrentPreferenceInt(const QString& key);
+    float getCurrentPreferenceFloat(const QString& key);
     QString getCurrentModelJson();
 
-    void setInt(const char* key, int value);
+    QString getCurrentModelDesc();
+
+    void setInt(const QString& key, int value);
+
+    const QJsonObject& getData()
+    {
+        return moeJson;
+    }
 
     QString getCommand();
+    
+    void setCurrent(const QString& name, int skin);
 
 signals:
     void stayOnTopChanged(bool);
+    void currentModelChanged(void);
 
 public slots:
     void setStayOnTop(bool value);
