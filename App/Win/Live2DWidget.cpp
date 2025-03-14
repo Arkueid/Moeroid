@@ -91,8 +91,6 @@ void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
-    ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
-
     // load model assets
     const std::string& path = config->getCurrentModelJson().toStdString();
     live2DModel->LoadModelJson(path.c_str());

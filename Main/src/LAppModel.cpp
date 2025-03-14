@@ -368,7 +368,7 @@ void LAppModel::ReleaseExpressions()
 void LAppModel::Update()
 {
     _currentFrame = LAppPal::GetCurrentTimePoint();
-    _deltaTimeSeconds = std::min(0.1f, static_cast<float>(_currentFrame - _lastFrame)); // 防止间隔过大导致后续状态异常
+    _deltaTimeSeconds = std::min(0.1f, _currentFrame - _lastFrame); // 防止间隔过大导致后续状态异常
     _lastFrame = _currentFrame;
 
     _dragManager->Update(_deltaTimeSeconds);
@@ -631,12 +631,12 @@ void LAppModel::SetExpression(const csmChar *expressionID)
     }
 }
 
-void LAppModel::SetRandomExpression(void *callee, void (*callback)(void *, const char *))
+std::string LAppModel::SetRandomExpression()
 {
     const int size = _expressions.GetSize();
     if (size == 0)
     {
-        return;
+        return "";
     }
     csmInt32 no = rand() % size;
     csmMap<csmString, ACubismMotion *>::const_iterator map_ite;
@@ -647,14 +647,11 @@ void LAppModel::SetRandomExpression(void *callee, void (*callback)(void *, const
         {
             csmString name = (*map_ite).First;
             SetExpression(name.GetRawString());
-            if (callee && callback)
-            {
-                callback(callee, name.GetRawString());
-            }
-            return;
+            return name.GetRawString();
         }
         i++;
     }
+    return "";
 }
 
 void LAppModel::ReloadRenderer()
@@ -999,4 +996,23 @@ void LAppModel::ResetPose()
 void LAppModel::ResetExpression()
 {
     _expressionManager->StopAllMotions();
+}
+
+void LAppModel::GetExpressionIds(void *collector, void (*callback)(void *collector, const char *expId))
+{
+    const int count = _modelSetting->GetExpressionCount();
+    for (int i = 0; i < count; i++)
+    {
+        callback(collector, _modelSetting->GetExpressionName(i));
+    }
+}
+
+void LAppModel::GetMotionGroups(void *collector, void (*callback)(void *collector, const char *groupName, int count))
+{
+    const int count = _modelSetting->GetMotionGroupCount();
+    for (int i = 0; i < count; i++)
+    {
+        const char* group = _modelSetting->GetMotionGroupName(i);
+        callback(collector, group, _modelSetting->GetMotionCount(group));
+    }
 }

@@ -105,7 +105,7 @@ public:
      * @brief   ランダムに選ばれた表情モーションをセットする
      *
      */
-    void SetRandomExpression(void* callee = nullptr, void (*callback)(void*, const char*) = nullptr);
+    std::string SetRandomExpression();
 
     /**
      * @brief   イベントの発火を受け取る
@@ -200,6 +200,10 @@ public:
 
     void ResetExpression();
 
+    void GetExpressionIds(void* collector, void(*callback)(void* collector, const char* expId));
+
+    void GetMotionGroups(void* collector, void(*callback)(void* collector, const char* groupName, int count));
+
 protected:
     /**
      *  @brief  モデルを描画する処理。モデルを描画する空間のView-Projection行列を渡す。
@@ -277,9 +281,9 @@ private:
 
     int* _tmpOrderedDrawIndices;
 
-    double _currentFrame;
-    double _lastFrame;
-    double _deltaTimeSeconds;
+    float _currentFrame;
+    float _lastFrame;
+    float _deltaTimeSeconds;
 
     // used to clear motion effect
     const float* _defaultParameterValues;
