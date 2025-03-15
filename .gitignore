@@ -2,3 +2,4 @@ build
 x64
 *.zip
 moe.todo.md
+moe.config.json
