@@ -27,6 +27,9 @@ class Live2DWidget : public QOpenGLWidget
     int yWhenClicked; // 左键点击时窗口 y
     bool windowMoved; // 窗口移动过则不响应点击事件
 
+    int rightClickX;
+    int rightClickY;
+
     int autoStickMargin; // 到屏幕边缘自动吸附的最大距离
     int stickOffset; // 微调距离
     StickState stickState;
@@ -43,6 +46,8 @@ class Live2DWidget : public QOpenGLWidget
     QTimer configSaveTimer;
 
     MoeConfig* config;
+
+    QMenu* menu;
 
 public:
     Live2DWidget();

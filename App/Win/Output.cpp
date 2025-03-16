@@ -9,7 +9,7 @@ Output::Output(): font("Arial", 12),
                   padding(10),
                   radius(10),
                   maxWidth(306),
-                  color(245, 245, 245, 255),
+                  color(250, 250, 250, 255),
                   tailA(15),
                   tailB(5)
 {

@@ -33,7 +33,7 @@ Input::Input(): backgroundColor("#FFD9E8")
 
 Input::~Input()
 {
-    thread->quit();
+    thread->terminate();
     thread->deleteLater();
     worker->deleteLater();
     output->deleteLater();

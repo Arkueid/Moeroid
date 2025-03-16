@@ -5,6 +5,8 @@
 #include <QtCore/QJsonArray>
 #include <QtWidgets/qactiongroup.h>
 
+#include <Process/PythonProcess.h>
+
 
 Systray::Systray(): moeConfig(nullptr), menu(nullptr), descAction(nullptr)
 {
@@ -30,6 +32,37 @@ void Systray::initialize(MoeConfig* config)
     stayOnTopAction->setChecked(moeConfig->getBoolean("stayOnTop"));
     connect(stayOnTopAction, &QAction::triggered, moeConfig, &MoeConfig::setStayOnTop);
     menu->addAction(stayOnTopAction);
+
+    
+    const QString& clan = config->getLan();
+
+    QMenu* lanMenu = menu->addMenu("语音");
+    QActionGroup* group = new QActionGroup(this);
+    group->setExclusive(true);
+    
+    QAction *cnAction = lanMenu->addAction("CN");
+    cnAction->setCheckable(true);
+    cnAction->setChecked(clan == "CN");
+    QAction *jpAction = lanMenu->addAction("JP");
+    jpAction->setCheckable(true);
+    jpAction->setChecked(clan == "JP");
+    QAction* enAction = lanMenu->addAction("EN");
+    enAction->setCheckable(true);
+    enAction->setChecked(clan == "EN");
+    
+    group->addAction(cnAction);
+    group->addAction(jpAction);
+    group->addAction(enAction);
+    connect(cnAction, &QAction::triggered, [&]{
+        moeConfig->setLan(CN);
+    });
+    connect(jpAction, &QAction::triggered, [&]{
+        moeConfig->setLan(JP);
+    });
+    connect(enAction, &QAction::triggered, [&]{
+        moeConfig->setLan(EN);
+    });
+
 
     QMenu* modelMenu = menu->addMenu("模型");
     QActionGroup* skinGroup = new QActionGroup(this);
@@ -68,6 +101,8 @@ void Systray::initialize(MoeConfig* config)
     connect(moeConfig, &MoeConfig::currentModelChanged, [&](){
         descAction->setText(moeConfig->getCurrentModelDesc());
     });
+
+
 
     setContextMenu(menu);
 }

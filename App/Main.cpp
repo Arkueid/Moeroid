@@ -49,8 +49,9 @@ int main(int argc, char* argv[])
     delete win;
     delete tray;
 
-    PythonProcess::dispose();
     LipSync::dispose();
+
+    PythonProcess::dispose();
     return 0;
 }
 

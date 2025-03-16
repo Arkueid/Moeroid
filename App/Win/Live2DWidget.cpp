@@ -10,6 +10,9 @@
 
 #include <Windows.h>
 
+#include <QtWidgets/QMenu>
+#include <QtWidgets/qactiongroup.h>
+
 Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                leftButtonPressed(false),
                                rightButtonPressed(false),
@@ -21,6 +24,8 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                framesThresholdRightPress(30),
                                leftClickX(0),
                                leftClickY(0),
+                               xWhenClicked(0),
+                               yWhenClicked(0),
                                windowMoved(false),
                                iParamMouthOpenY(-1),
                                cursorEntered(false),
@@ -44,7 +49,7 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
 Live2DWidget::~Live2DWidget()
 {
     delete live2DModel;
-    input->deleteLater();
+    delete input;
     if (configSaveTimer.isActive())
     {
         configSaveTimer.stop();
@@ -86,17 +91,55 @@ StickState Live2DWidget::getStickState() const
     return stickState;
 }
 
-typedef void (__stdcall *SwapInterval)(int);
+typedef bool (__stdcall *SwapInterval)(int);
 
 void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
+    ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
     // load model assets
     const std::string& path = config->getCurrentModelJson().toStdString();
     live2DModel->LoadModelJson(path.c_str());
     const Csm::CubismId* handle = Csm::CubismFramework::GetIdManager()->GetId("ParamMouthOpenY");
     iParamMouthOpenY = live2DModel->GetModel()->GetParameterIndex(handle);
+
+    QString curExp = config->getCurrentPreferenceString("expression");
+    live2DModel->SetExpression(curExp.toStdString().c_str());
+
+    menu = new QMenu(this);
+    QMenu* expMenu = menu->addMenu("表情");
+    QActionGroup* group = new QActionGroup(expMenu);
+    group->setExclusive(true);
+    void* x[3] = {expMenu, group, &curExp};
+    live2DModel->GetExpressionIds(x, [](void* collector, const char* expId) {
+        QMenu* expMenu = (QMenu*)((void**)collector)[0];
+        QActionGroup* group = (QActionGroup*)((void**)collector)[1];
+        QAction* action = expMenu->addAction(expId);
+        action->setCheckable(true);
+        const QString& s = (*((QString*)((void**)collector)[2]));
+        if (s != "" && s == expId)
+        {
+            action->setChecked(true);
+        }
+        group->addAction(action);
+    });
+    expMenu->addAction("重置   ");
+    connect(expMenu, &QMenu::triggered, [&](QAction* action){
+        const std::string s = action->text().toStdString();
+        if (s == "重置   ")
+        {
+            live2DModel->ResetExpression();
+            config->setCurrentPreferenceString("expression", "");
+        }
+        else
+        {
+            config->setCurrentPreferenceString("expression", s.c_str());
+            live2DModel->SetExpression(s.c_str());
+        }
+        configSaveTimer.start();
+    });
+    
     startTimer(1000 / 60);
 }
 
@@ -138,30 +181,29 @@ void Live2DWidget::timerEvent(QTimerEvent* event)
     const float tcx = x() + halfWW;
     const float tcy = y() + halfWH;
     
-    
     if (mx <= tcx)
     {
         if (my <= tcy) // 第二象限
         {
-            ftx = mx / (tcx + 0.1f) * halfWW;
-            fty = my / (tcy + 0.1f) * halfWH;
+            ftx = mx / max(tcx, 1.f) * halfWW;
+            fty = my / max(tcy, 1.f) * halfWH;
         }
         else // 第三象限
         {
-            ftx = mx / (tcx + 0.1f) * halfWW;
-            fty = (my - tcy) / (screenHeight - tcy + 0.1f) * halfWW + halfWW;
+            ftx = mx / max(tcx, 1.f) * halfWW;
+            fty = (my - tcy) / max(screenHeight - tcy, 1.f) * halfWW + halfWW;
         }
     }
     else
     {
         if (my <= tcy) // 第四象限
         {
-            ftx = (mx - tcx) / (screenWidth - tcx + 0.1f) * halfWW + halfWW;
-            fty = (my - tcy) / (screenHeight - tcy + 0.1f) * halfWH + halfWH;
+            ftx = (mx - tcx) / max(screenWidth - tcx, 1.f) * halfWW + halfWW;
+            fty = (my - tcy) / max(screenHeight - tcy, 1.f) * halfWH + halfWH;
         }
         else // 第一象限
         {
-            ftx = (mx - tcx) / (screenWidth - tcx + 0.1f) * halfWW + halfWW;
+            ftx = (mx - tcx) / max(screenWidth - tcx, 1.f) * halfWW + halfWW;
             fty = my / tcy * halfWH;
         }
     }
@@ -214,6 +256,9 @@ void Live2DWidget::mousePressEvent(QMouseEvent* event)
     else if (event->button() == Qt::RightButton)
     {
         rightButtonPressed = true;
+        const QPointF point = event->globalPosition();
+        rightClickX = point.x();
+        rightClickY = point.y();
     }
 }
 
@@ -241,7 +286,9 @@ void Live2DWidget::mouseReleaseEvent(QMouseEvent* event)
         {
             if (framesElapsedRightPress < framesThresholdRightPress)
             {
-                live2DModel->SetRandomExpression();
+                // live2DModel->SetRandomExpression();
+                menu->move(rightClickX, rightClickY);
+                menu->show();
             }
             else
             {

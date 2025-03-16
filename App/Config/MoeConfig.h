@@ -1,5 +1,6 @@
 #pragma once
 #include <QtCore/QJsonObject>
+#include "Process/PythonProcess.h"
 
 class MoeConfig : public QObject
 {
@@ -20,14 +21,19 @@ public:
     
     int getPreferenceInt(const QString& name, const QString& key);
     float getPreferenceFloat(const QString& name, const QString& key);
+    QString getPreferenceString(const QString& name, const QString& key);
+    void setPreferenceString(const QString& name, const QString& key, const QString& value);
+
     QString getModelJson(const QString& name, int skin);
 
     int getCurrentPreferenceInt(const QString& key);
     float getCurrentPreferenceFloat(const QString& key);
+    QString getCurrentPreferenceString(const QString& key);
+    void setCurrentPreferenceString(const QString& key, const QString& value);
+
+    // current
     QString getCurrentModelJson();
-
     QString getCurrentModelDesc();
-
     QString getCurrentName();
 
     int getCurrentSkin();
@@ -43,9 +49,14 @@ public:
     
     void setCurrent(const QString& name, int skin);
 
+    void setLan(LAN lan);
+
+    QString getLan();
+
 signals:
     void stayOnTopChanged(bool);
     void currentModelChanged(void);
+    void lanChanged(LAN);
 
 public slots:
     void setStayOnTop(bool value);

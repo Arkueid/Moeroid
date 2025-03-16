@@ -40,6 +40,7 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     current["name"] = "猫耳幻丝";
     current["skin"] = 0;
     object["current"] = current;
+    object["language"] = "CN";
 
     QJsonObject moefans, preferences, skin, models;
     preferences["offsetX"] = 0.0f;
@@ -50,6 +51,7 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     preferences["windowWidth"] = 400;
     preferences["lipsyncN"] = 2;
     preferences["scale"] = 1.0f;
+    preferences["expression"] = "";
     moefans["preferences"] = preferences;
     QJsonArray skins2;
     skin["name"] = "初始";
@@ -109,9 +111,37 @@ float MoeConfig::getCurrentPreferenceFloat(const QString& key)
     return getPreferenceFloat(name, key);
 }
 
+QString MoeConfig::getCurrentPreferenceString(const QString &key)
+{
+    const QString& name = moeJson["current"].toObject()["name"].toString();
+    return getPreferenceString(name, key);
+}
+
+void MoeConfig::setCurrentPreferenceString(const QString &key, const QString &value)
+{
+    const QString& name = moeJson["current"].toObject()["name"].toString();
+    setPreferenceString(name, key, value);
+}
+
 float MoeConfig::getPreferenceFloat(const QString& name, const QString& key)
 {
     return moeJson["models"].toObject()[name].toObject()["preferences"].toObject()[key].toDouble();
+}
+
+QString MoeConfig::getPreferenceString(const QString &name, const QString &key)
+{
+    return moeJson["models"].toObject()[name].toObject()["preferences"].toObject()[key].toString();
+}
+
+void MoeConfig::setPreferenceString(const QString &name, const QString &key, const QString &value)
+{
+    QJsonObject models = moeJson["models"].toObject();
+    QJsonObject model = models[name].toObject();
+    QJsonObject preferences = model["preferences"].toObject();
+    preferences[key] = value;
+    model["preferences"] = preferences;
+    models[name] = model;
+    moeJson["models"] = models;
 }
 
 QString MoeConfig::getModelJson(const QString& name, int skin)
@@ -162,6 +192,29 @@ void MoeConfig::setCurrent(const QString &name, const int skin)
     obj["skin"] = skin;
     moeJson["current"] = obj;
     emit currentModelChanged();
+}
+
+void MoeConfig::setLan(LAN lan)
+{
+    if (lan == CN)
+    {
+        moeJson["language"] = "CN";
+    }
+    else if (lan == JP)
+    {
+        moeJson["language"] = "JP";
+    }
+    else if (lan == EN)
+    {
+        moeJson["language"] = "EN";
+    }
+
+    emit lanChanged(lan);
+}
+
+QString MoeConfig::getLan()
+{
+    return moeJson["language"].toString();
 }
 
 void MoeConfig::setStayOnTop(bool value)
