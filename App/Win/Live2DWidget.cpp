@@ -75,6 +75,7 @@ void Live2DWidget::initialize(MoeConfig* config)
     stickOffset = config->getCurrentPreferenceInt("stickOffset");
     live2DModel->SetOffset(config->getCurrentPreferenceFloat("offsetX"),
                            config->getCurrentPreferenceFloat("offsetY"));
+    live2DModel->SetScale(config->getCurrentPreferenceFloat("scale"));
     processStick();
 
     connect(&configSaveTimer, &QTimer::timeout, this, &Live2DWidget::saveConfig);

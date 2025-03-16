@@ -49,6 +49,7 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     preferences["windowHeight"] = 500;
     preferences["windowWidth"] = 400;
     preferences["lipsyncN"] = 2;
+    preferences["scale"] = 1.0f;
     moefans["preferences"] = preferences;
     QJsonArray skins2;
     skin["name"] = "初始";
@@ -132,6 +133,16 @@ QString MoeConfig::getCurrentModelDesc()
     const QString& name = obj["name"].toString();
     const int skin = obj["skin"].toInt();
     return name + ":" + moeJson["models"].toObject()[name].toObject()["skins"].toArray()[skin].toObject()["name"].toString();
+}
+
+QString MoeConfig::getCurrentName()
+{
+    return moeJson["current"].toObject()["name"].toString();
+}
+
+int MoeConfig::getCurrentSkin()
+{
+    return moeJson["current"].toObject()["skin"].toInt();
 }
 
 void MoeConfig::setInt(const QString& key, int value)

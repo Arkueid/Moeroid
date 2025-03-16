@@ -2,7 +2,6 @@
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
 #include <QtGui/QMouseEvent>
-#include <QtGui/QPainterPath>
 #include "../Config/StickState.h"
 
 Output::Output(): font("Arial", 12),
@@ -10,7 +9,9 @@ Output::Output(): font("Arial", 12),
                   padding(10),
                   radius(10),
                   maxWidth(306),
-                  color(20, 20, 20, 150)
+                  color(245, 245, 245, 255),
+                  tailA(15),
+                  tailB(5)
 {
     setWindowFlags(Qt::SubWindow | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -25,14 +26,12 @@ void Output::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    QPainterPath path;
-    path.addRoundedRect(bubbleRect, radius, radius);
+    painter.fillPath(bubble, color);
+    painter.fillPath(tail, color);
 
-    painter.fillPath(path, Qt::black);
-
-    painter.setBrush(color);
+    painter.setPen(Qt::black);
     painter.setFont(font);
-    painter.drawText(padding, padding, fontRect.width(), fontRect.height(), Qt::AlignLeft | Qt::TextWordWrap, text);
+    painter.drawText(textOffsetX + padding, padding, fontRect.width(), fontRect.height(), Qt::AlignLeft | Qt::TextWordWrap, text);
 }
 
 void Output::mousePressEvent(QMouseEvent* event)
@@ -53,20 +52,51 @@ void Output::show(const QString& inText, const QWidget* anchor)
 
     this->text = inText;
     fontRect = metrics.boundingRect(0, 0, maxWidth, 0, Qt::AlignLeft | Qt::TextWordWrap, inText);
-    bubbleRect = QRect(0, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
-    resize(bubbleRect.width(), bubbleRect.height());
+
+    bubble.clear();
+    tail.clear();
 
     if (state == STICK_NONE)
     {
+        QRect bubbleRect(0, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
+        resize(bubbleRect.width(), bubbleRect.height() + tailA);
         move(anchor->x() + anchor->width() / 2 - width() / 2, anchor->y() + anchor->height() / 2);
+
+        bubble.addRoundedRect(bubbleRect, radius, radius);
+        // tail.moveTo(bubbleRect.width()/2 - tailB, bubbleRect.height());
+        // tail.lineTo(bubbleRect.width()/2, bubbleRect.height() + tailA);
+        // tail.lineTo(bubbleRect.width()/2 + tailB, bubbleRect.height());
+        // tail.lineTo(bubbleRect.width()/2 - tailB, bubbleRect.height());
+
+        textOffsetX = 0;
     }
     else if (state == STICK_LEFT) // left
     {
-        move(anchor->x() + anchor->width(), anchor->y() + anchor->height() / 2);
+        QRect bubbleRect(tailA, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
+        resize(bubbleRect.width() + tailA, bubbleRect.height());
+        move(anchor->x() + anchor->width() / 2 + tailA, anchor->y() + anchor->height() / 2);
+
+        bubble.addRoundedRect(bubbleRect, radius, radius);
+        tail.moveTo(tailA, bubbleRect.height() / 2 - tailB);
+        tail.lineTo(0, bubbleRect.height() / 2);
+        tail.lineTo(tailA, bubbleRect.height() / 2 + tailB);
+        tail.lineTo(tailA, bubbleRect.height() / 2 - tailB);
+
+        textOffsetX = tailA;
     }
     else if (state == STICK_RIGHT) // right
     {
-        move(anchor->x() + anchor->width() / 2 - width(), anchor->y() + anchor->height() / 2);
+        QRect bubbleRect(0, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
+        resize(bubbleRect.width() + tailA, bubbleRect.height());
+        move(anchor->x() + anchor->width() / 2 - width() - tailA, anchor->y() + anchor->height() / 2);
+
+        bubble.addRoundedRect(bubbleRect, radius, radius);
+        tail.moveTo(bubbleRect.width(), bubbleRect.height() / 2 - tailB);
+        tail.lineTo(bubbleRect.width() + tailA, bubbleRect.height() / 2);
+        tail.lineTo(bubbleRect.width(), bubbleRect.height() / 2 + tailB);
+        tail.lineTo(bubbleRect.width(), bubbleRect.height() / 2 - tailB);
+
+        textOffsetX = 0;
     }
 
     QWidget::show();

@@ -28,6 +28,10 @@ public:
 
     QString getCurrentModelDesc();
 
+    QString getCurrentName();
+
+    int getCurrentSkin();
+
     void setInt(const QString& key, int value);
 
     const QJsonObject& getData()

@@ -3,6 +3,7 @@
 #include <QtWidgets/qapplication.h>
 #include <QtWidgets/QMenu>
 #include <QtCore/QJsonArray>
+#include <QtWidgets/qactiongroup.h>
 
 
 Systray::Systray(): moeConfig(nullptr), menu(nullptr), descAction(nullptr)
@@ -31,6 +32,10 @@ void Systray::initialize(MoeConfig* config)
     menu->addAction(stayOnTopAction);
 
     QMenu* modelMenu = menu->addMenu("模型");
+    QActionGroup* skinGroup = new QActionGroup(this);
+    skinGroup->setExclusive(true);
+    const QString& currentName = config->getCurrentName();
+    const int currentSkin = config->getCurrentSkin();
     const QJsonObject& models = config->getData()["models"].toObject();
     for (const QString& key: models.keys())
     {
@@ -41,6 +46,12 @@ void Systray::initialize(MoeConfig* config)
         {
             const QString& name = ref.toObject()["name"].toString();
             QAction* skinAction = skinMenu->addAction(name);
+            skinAction->setCheckable(true);
+            skinGroup->addAction(skinAction);
+            if (key == currentName && idx == currentSkin)
+            {
+                skinAction->setChecked(true);
+            }
             connect(skinAction, &QAction::triggered, [=](){
                 moeConfig->setCurrent(key, idx);
             });

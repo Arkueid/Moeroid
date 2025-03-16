@@ -1,6 +1,7 @@
 #pragma once
 #include <QtWidgets/QWidget>
 #include <QtCore/QTimer>
+#include <QtGui/QPainterPath>
 
 class Output : public QWidget
 {
@@ -9,10 +10,15 @@ class Output : public QWidget
     QFont font;
     QFontMetrics metrics;
     QRect fontRect;
-    QRect bubbleRect;
+    
+    QPainterPath bubble;
+    QPainterPath tail;
 
     int padding;
+    int textOffsetX;
     int radius;
+    int tailB;
+    int tailA;
 
     int maxWidth;
 

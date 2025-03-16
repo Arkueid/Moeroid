@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     Systray* tray = new Systray();
     tray->initialize(&moeConfig);
     tray->show();
-    
+
     PythonProcess::create(&moeConfig);
 
     LipSync::initialize(&moeConfig);
@@ -35,7 +35,6 @@ int main(int argc, char* argv[])
     win->show();
 
     QObject::connect(&moeConfig, &MoeConfig::currentModelChanged, [&]() {
-        win->close();
         delete win;
         CubismHelper::Dispose();  // 清除之前 OpenGL 上下文
 

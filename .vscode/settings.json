@@ -9,6 +9,8 @@
         "variant": "cpp",
         "qsystemtrayicon": "cpp",
         "charconv": "cpp",
-        "cstdio": "cpp"
+        "cstdio": "cpp",
+        "xlocale": "cpp",
+        "xiosbase": "cpp"
     }
 }
