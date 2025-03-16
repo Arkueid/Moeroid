@@ -44,6 +44,9 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
 
     configSaveTimer.setSingleShot(true);
     configSaveTimer.setInterval(2000);
+
+    HWND hWnd = reinterpret_cast<HWND>(winId());
+    SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLongW(hWnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
 }
 
 Live2DWidget::~Live2DWidget()
@@ -169,46 +172,7 @@ void Live2DWidget::timerEvent(QTimerEvent* event)
     const int mouseLocalY = my - y();
     processTransparentForMouse(mouseLocalX, mouseLocalY);
 
-    // 面部朝向点局部坐标
-    float ftx;
-    float fty;
-
-    const float wWidth = width();
-    const float wHeight = height();
-    // 窗口中心全局坐标
-    const float halfWW = wWidth / 2;
-    const float halfWH = wHeight / 2;
-    const float tcx = x() + halfWW;
-    const float tcy = y() + halfWH;
-    
-    if (mx <= tcx)
-    {
-        if (my <= tcy) // 第二象限
-        {
-            ftx = mx / max(tcx, 1.f) * halfWW;
-            fty = my / max(tcy, 1.f) * halfWH;
-        }
-        else // 第三象限
-        {
-            ftx = mx / max(tcx, 1.f) * halfWW;
-            fty = (my - tcy) / max(screenHeight - tcy, 1.f) * halfWW + halfWW;
-        }
-    }
-    else
-    {
-        if (my <= tcy) // 第四象限
-        {
-            ftx = (mx - tcx) / max(screenWidth - tcx, 1.f) * halfWW + halfWW;
-            fty = (my - tcy) / max(screenHeight - tcy, 1.f) * halfWH + halfWH;
-        }
-        else // 第一象限
-        {
-            ftx = (mx - tcx) / max(screenWidth - tcx, 1.f) * halfWW + halfWW;
-            fty = my / tcy * halfWH;
-        }
-    }
-
-    live2DModel->Drag(ftx, fty);
+    processDrag(mx, my);
 
     if (rightButtonPressed)
     {
@@ -329,6 +293,50 @@ void Live2DWidget::processTransparentForMouse(const int mouseLocalX, const int m
             ? SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLongW(hWnd, GWL_EXSTYLE) & (~WS_EX_TRANSPARENT))
             : SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLongW(hWnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
     }
+}
+
+void Live2DWidget::processDrag(float mx, float my)
+{
+    // 面部朝向点局部坐标
+    float ftx;
+    float fty;
+
+    const float wWidth = width();
+    const float wHeight = height();
+    // 窗口中心全局坐标
+    const float halfWW = wWidth / 2;
+    const float halfWH = wHeight / 2;
+    const float tcx = x() + halfWW;
+    const float tcy = y() + halfWH;
+    
+    if (mx <= tcx)
+    {
+        if (my <= tcy) // 第二象限
+        {
+            ftx = mx / max(tcx, 1.f) * halfWW;
+            fty = my / max(tcy, 1.f) * halfWH;
+        }
+        else // 第三象限
+        {
+            ftx = mx / max(tcx, 1.f) * halfWW;
+            fty = (my - tcy) / max(screenHeight - tcy, 1.f) * halfWW + halfWW;
+        }
+    }
+    else
+    {
+        if (my <= tcy) // 第四象限
+        {
+            ftx = (mx - tcx) / max(screenWidth - tcx, 1.f) * halfWW + halfWW;
+            fty = (my - tcy) / max(screenHeight - tcy, 1.f) * halfWH + halfWH;
+        }
+        else // 第一象限
+        {
+            ftx = (mx - tcx) / max(screenWidth - tcx, 1.f) * halfWW + halfWW;
+            fty = my / tcy * halfWH;
+        }
+    }
+
+    live2DModel->Drag(ftx, fty);
 }
 
 void Live2DWidget::processStick()

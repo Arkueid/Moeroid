@@ -66,6 +66,7 @@ protected:
 
 private:
     void processTransparentForMouse(int mouseLocalX, int mouseLocalY);
+    void processDrag(float mx, float my);
     void processStick();
     void showInput();
 
