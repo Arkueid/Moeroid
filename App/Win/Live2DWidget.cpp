@@ -143,25 +143,25 @@ void Live2DWidget::timerEvent(QTimerEvent* event)
     {
         if (my <= tcy) // 第二象限
         {
-            ftx = mx / tcx * halfWW;
-            fty = my / tcy * halfWH;
+            ftx = mx / (tcx + 0.1f) * halfWW;
+            fty = my / (tcy + 0.1f) * halfWH;
         }
         else // 第三象限
         {
-            ftx = mx / tcx * halfWW;
-            fty = (my - tcy) / (screenHeight - tcy) * halfWW + halfWW;
+            ftx = mx / (tcx + 0.1f) * halfWW;
+            fty = (my - tcy) / (screenHeight - tcy + 0.1f) * halfWW + halfWW;
         }
     }
     else
     {
         if (my <= tcy) // 第四象限
         {
-            ftx = (mx - tcx) / (screenWidth - tcx) * halfWW + halfWW;
-            fty = (my - tcy) / (screenHeight - tcy) * halfWH + halfWH;
+            ftx = (mx - tcx) / (screenWidth - tcx + 0.1f) * halfWW + halfWW;
+            fty = (my - tcy) / (screenHeight - tcy + 0.1f) * halfWH + halfWH;
         }
         else // 第一象限
         {
-            ftx = (mx - tcx) / (screenWidth - tcx) * halfWW + halfWW;
+            ftx = (mx - tcx) / (screenWidth - tcx + 0.1f) * halfWW + halfWW;
             fty = my / tcy * halfWH;
         }
     }
