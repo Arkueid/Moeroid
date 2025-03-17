@@ -14,8 +14,9 @@
 
 int main(int argc, char* argv[])
 {
+#ifdef _DEBUG
     SetConsoleOutputCP(65001);
-
+#endif
     QApplication app(argc, argv);
 
     MoeConfig moeConfig;

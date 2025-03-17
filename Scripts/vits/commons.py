@@ -1,7 +1,7 @@
 import math
 
-import torch
-from torch.nn import functional as F
+# import torch
+# from torch.nn import functional as F
 
 
 def init_weights(m, mean=0.0, std=0.01):
@@ -102,19 +102,19 @@ def subsequent_mask(length):
     return mask
 
 
-@torch.jit.script
-def fused_add_tanh_sigmoid_multiply(input_a, input_b, n_channels):
-    n_channels_int = n_channels[0]
-    in_act = input_a + input_b
-    t_act = torch.tanh(in_act[:, :n_channels_int, :])
-    s_act = torch.sigmoid(in_act[:, n_channels_int:, :])
-    acts = t_act * s_act
-    return acts
+# @torch.jit.script
+# def fused_add_tanh_sigmoid_multiply(input_a, input_b, n_channels):
+#     n_channels_int = n_channels[0]
+#     in_act = input_a + input_b
+#     t_act = torch.tanh(in_act[:, :n_channels_int, :])
+#     s_act = torch.sigmoid(in_act[:, n_channels_int:, :])
+#     acts = t_act * s_act
+#     return acts
 
 
-def shift_1d(x):
-    x = F.pad(x, convert_pad_shape([[0, 0], [0, 0], [1, 0]]))[:, :, :-1]
-    return x
+# def shift_1d(x):
+#     x = F.pad(x, convert_pad_shape([[0, 0], [0, 0], [1, 0]]))[:, :, :-1]
+#     return x
 
 
 def sequence_mask(length, max_length=None):

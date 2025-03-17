@@ -8,7 +8,10 @@ import sys
 
 import numpy as np
 from scipy.io.wavfile import read
-import torch
+try:
+    import torch
+except:
+    pass
 
 MATPLOTLIB_FLAG = False
 

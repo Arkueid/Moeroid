@@ -46,7 +46,7 @@ def on_response(text: str):
             # time.sleep(1 / 60)
             sounddevice.play(voice[0], voice[1])
         except Exception as e:
-            logging.warn(e)
+            logging.warning(e)
 
         __text = text[stopped_i:]
     else:  # 保存供下一次生成

@@ -1,1 +1,1 @@
-ollama create neko:qwen2.5-1.5b -f neko
+ollama create neko:gemma3-1b -f neko

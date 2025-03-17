@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>对话列表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 25px auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message.assistant {
+            justify-content: flex-start;
+        }
+        .message-content {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 10px;
+            position: relative;
+            text-align: left;
+        }
+        .message.user .message-content {
+            background-color: #ddefdd;
+            color: #000;
+        }
+        .message.assistant .message-content {
+            background-color: #f1f0f0;
+            color: #000;
+        }
+        .audio-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .play-button {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            outline: none;
+        }
+        .audio {
+            display: none;
+        }
+    </style>
+    <script>
+        function togglePlay(button) {
+            const audio = button.nextElementSibling;
+            if (audio.paused) {
+                audio.play();
+                button.textContent = '暂停';
+            } else {
+                audio.pause();
+                button.textContent = '播放';
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div style="text-align:center; margin-bottom:20px;">
+    <form method="get" action="/">
+        <label for="date">选择日期:</label>
+        <input type="date" id="date" name="date" value="{{ current_date }}">
+        <button type="submit">筛选</button>
+    </form>
+</div>
+
+<div class="chat-container">
+    {% for item in items %}
+        <div class="message {% if item[1] == 'user' %}user{% else %}assistant{% endif %}">
+            <div class="message-content">
+                <p>{{ item[0] }}</p>
+                {% if item[2] %}
+                    <div class="audio-wrapper">
+                        <button class="play-button" onclick="togglePlay(this)">播放</button>
+                        <audio class="audio">
+                            <source src="{{ url_for('static', filename=item[2]) }}" type="audio/wav">
+                            您的浏览器不支持 audio 元素。
+                        </audio>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

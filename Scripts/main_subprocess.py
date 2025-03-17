@@ -2,11 +2,37 @@ import logging
 import struct
 import config
 import os
+import time
+import uuid
+import sqlite3
 
 cd = os.path.split(__file__)[0]
+data_dir = os.path.join(cd, "..", "Data")
+if not os.path.exists(data_dir):
+    os.makedirs(data_dir)
+
+audio_dir = os.path.join(data_dir, "Audio")
+if not os.path.exists(audio_dir):
+    os.mkdir(audio_dir)
+
+log_dir = os.path.join(data_dir, "Log")
+if not os.path.exists(log_dir):
+    os.mkdir(log_dir)
+
+today = time.strftime("%Y-%m-%d", time.localtime(time.time()))
+
+log_file = os.path.join(log_dir, f"{today}.txt")
+
+chat_db = sqlite3.connect(os.path.join(data_dir, "History.db"))
+
+chat_db.autocommit = True
+
+table = "messages"
+
+chat_db.execute(f"create table if not exists {table} (content text not null, role text not null, audio text not null, ct timestamp not null)")
 
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
-logging.basicConfig(filename=os.path.join(cd, "log.txt"), level=logging.INFO, format=LOG_FORMAT, encoding="utf-8")
+logging.basicConfig(filename=log_file, level=logging.INFO, format=LOG_FORMAT, encoding="utf-8")
 
 import vits_helper
 import llm
@@ -46,7 +72,7 @@ logging.info("task start")
 
 def on_response(text: str):
     global __text
-    
+
     if text == "" and __text == "":
         sys.stdout.buffer.write(struct.pack("Q", 0))
         sys.stdout.buffer.flush()
@@ -72,14 +98,18 @@ def on_response(text: str):
             # -- tts start--
             voice = vits_helper.tts(f"{lan[1]}{t}{lan[1]}", array=True, both=True)
             # -- tts end--
-            time.sleep(0.9)
+            audio_bytes: bytes = voice[1].getvalue()
+            audio_name = f"{uuid.uuid4().hex}.wav"
+            wav_path = os.path.join(audio_dir, audio_name)
+            with open(wav_path, 'wb') as f:
+                f.write(audio_bytes)
+
             sounddevice.wait()  # block
             text_bytes = t.encode("utf-8")
             length_bytes = struct.pack("Q", len(text_bytes))
             sys.stdout.buffer.write(length_bytes)
             sys.stdout.buffer.write(text_bytes)
-
-            audio_bytes: bytes = voice[1].getvalue()
+            
             length_bytes = struct.pack("Q", len(audio_bytes))
             sys.stdout.buffer.write(length_bytes)
             sys.stdout.buffer.write(audio_bytes)
@@ -87,11 +117,17 @@ def on_response(text: str):
             sounddevice.play(voice[0][0], voice[0][1])
             voice[1].close()
 
+            ct = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+            chat_db.execute(f"insert into `{table}` values('{t}', 'assistant', '{audio_name}', '{ct}')")
+
             if text == "":
                 sys.stdout.buffer.write(struct.pack("Q", 0))
                 sys.stdout.buffer.flush()
+
         except Exception as e:
             logging.error(e)
+            sys.stdout.buffer.write(struct.pack("Q", 0))
+            sys.stdout.buffer.flush()
 
         __text = text[stopped_i:]
     else:  # 保存供下一次生成
@@ -103,6 +139,8 @@ def processChat():
     size = struct.unpack("Q", length_bytes)[0]
     text = sys.stdin.buffer.read(size).decode("utf-8")
     logging.info("received: %s" % text)
+    ct = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+    chat_db.execute(f"insert into `{table}` values('{text}', 'user', '', '{ct}')")
 
     try:
         text = f"请用{lan[2]}回复：{text}"
