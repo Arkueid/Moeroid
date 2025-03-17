@@ -1,7 +1,7 @@
 #pragma once
-#include <QtWidgets/QWidget>
-#include <QtCore/QTimer>
-#include <QtGui/QPainterPath>
+#include <QWidget>
+#include <QTimer>
+#include <QPainterPath>
 
 class Output : public QWidget
 {

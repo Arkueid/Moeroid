@@ -1,10 +1,10 @@
 ﻿#include "MoeConfig.h"
 
-#include <QtCore/QFile>
+#include <QFile>
 
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonArray>
-#include <QtGui/QScreen>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QScreen>
 
 MoeConfig::MoeConfig()
 = default;

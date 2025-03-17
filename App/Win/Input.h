@@ -1,8 +1,8 @@
 #pragma once
-#include <QtGui/QMouseEvent>
+#include <QMouseEvent>
 
 #include "../ui/Input.h"
-#include <QtGui/QPainter>
+#include <QPainter>
 
 class Output;
 class Live2DWidget;

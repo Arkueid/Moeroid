@@ -57,8 +57,9 @@ else:
 logging.info(f"current lan: {lan}")
 
 # model = "neko:qwen2.5-0.5b"
-# model = "neko:gemma2-2b"
-model = "neko:qwen2.5-1.5b"
+# model = "neko:gemma3-1b"
+# model = "neko:qwen2.5-1.5b"
+model = "neko:qwen2.5-inst-0.5b"
 
 history = []
 
@@ -67,6 +68,7 @@ __text = ""
 puctuation = "！。；，？" + ",.;!?"
 
 
+vits_helper.set_current_sid(2)
 vits_helper.init_onnx_model()
 logging.info("task start")
 

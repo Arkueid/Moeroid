@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>317</width>
-    <height>43</height>
+    <width>329</width>
+    <height>56</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -70,16 +70,16 @@ QPushButton:pressed {
     <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>2</number>
+    <number>4</number>
    </property>
    <property name="topMargin">
-    <number>6</number>
+    <number>10</number>
    </property>
    <property name="rightMargin">
-    <number>2</number>
+    <number>4</number>
    </property>
    <property name="bottomMargin">
-    <number>6</number>
+    <number>10</number>
    </property>
    <item>
     <spacer name="horizontalSpacer">

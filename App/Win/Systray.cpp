@@ -1,11 +1,11 @@
 ﻿#include "Systray.h"
 
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/QMenu>
-#include <QtCore/QJsonArray>
-#include <QtWidgets/qactiongroup.h>
+#include <QApplication>
+#include <QMenu>
+#include <QJsonArray>
+#include <qactiongroup.h>
 
-#include <Process/PythonProcess.h>
+#include "Process/PythonProcess.h"
 
 
 Systray::Systray(): moeConfig(nullptr), menu(nullptr), descAction(nullptr)

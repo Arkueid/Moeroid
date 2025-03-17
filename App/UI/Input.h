@@ -34,7 +34,7 @@ public:
     {
         if (Input->objectName().isEmpty())
             Input->setObjectName("Input");
-        Input->resize(317, 43);
+        Input->resize(329, 56);
         QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -87,7 +87,7 @@ public:
         horizontalLayout = new QHBoxLayout(Input);
         horizontalLayout->setSpacing(0);
         horizontalLayout->setObjectName("horizontalLayout");
-        horizontalLayout->setContentsMargins(2, 6, 2, 6);
+        horizontalLayout->setContentsMargins(4, 10, 4, 10);
         horizontalSpacer = new QSpacerItem(9, 0, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);

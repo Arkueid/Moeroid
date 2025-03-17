@@ -11,6 +11,14 @@
         "charconv": "cpp",
         "cstdio": "cpp",
         "xlocale": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "qfontmetrics": "cpp",
+        "qpainter": "cpp",
+        "qmouseevent": "cpp",
+        "qtimer": "cpp",
+        "qpainterpath": "cpp",
+        "qwidget": "cpp",
+        "qmetaobject": "cpp",
+        "qobject": "cpp"
     }
 }

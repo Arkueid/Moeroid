@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include <QtOpenGLWidgets/QOpenGLWidget>
-#include <QtCore/QTimer>
+#include <QOpenGLWidget>
+#include <QTimer>
 #include "../Config/MoeConfig.h"
 
 class LAppModel;

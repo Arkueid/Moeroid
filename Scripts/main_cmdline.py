@@ -53,7 +53,7 @@ def on_response(text: str):
         __text = t
 
 
-model = "neko:qwen2.5-1.5b"
+model = "neko:gemma3-1b"
 history = []
 while True:
     x = input(">>>")

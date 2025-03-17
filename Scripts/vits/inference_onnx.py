@@ -16,7 +16,7 @@ import argparse
 from text import text_to_sequence
 import numpy as np
 from scipy.io import wavfile
-import torch
+# import torch
 import json
 import commons
 import utils
@@ -31,9 +31,9 @@ except ImportError:
     sys.exit(1)
 
 
-def to_numpy(tensor: torch.Tensor):
-    return tensor.detach().cpu().numpy() if tensor.requires_grad \
-        else tensor.detach().numpy()
+# def to_numpy(tensor: torch.Tensor):
+#     return tensor.detach().cpu().numpy() if tensor.requires_grad \
+#         else tensor.detach().numpy()
 
 
 def get_args():
@@ -101,7 +101,7 @@ def main():
 
             # if hps.data.add_blank:
             #     seq = commons.intersperse(seq, 0)
-            with torch.no_grad():
+            # with torch.no_grad():
                 #         x = torch.LongTensor([seq])
                 #         x_len = torch.IntTensor([x.size(1)]).long()
                 #         sid = torch.LongTensor([sid]).long()
@@ -110,41 +110,41 @@ def main():
                 #         scales = scales.unsqueeze(0)
 
                 # use numpy to replace torch
-                x = np.array([seq], dtype=np.int64)
-                x_len = np.array([x.shape[1]], dtype=np.int64)
-                sid = np.array([sid], dtype=np.int64)
-                # noise(可用于控制感情等变化程度) lenth(可用于控制整体语速) noisew(控制音素发音长度变化程度)
-                # 参考 https://github.com/gbxh/genshinTTS
-                scales = np.array([0.667, 0.8, 1], dtype=np.float32)
-                # scales = scales[np.newaxis, :]
-                # scales.reshape(1, -1)
-                scales.resize(1, 3)
+            x = np.array([seq], dtype=np.int64)
+            x_len = np.array([x.shape[1]], dtype=np.int64)
+            sid = np.array([sid], dtype=np.int64)
+            # noise(可用于控制感情等变化程度) lenth(可用于控制整体语速) noisew(控制音素发音长度变化程度)
+            # 参考 https://github.com/gbxh/genshinTTS
+            scales = np.array([0.667, 0.8, 1], dtype=np.float32)
+            # scales = scales[np.newaxis, :]
+            # scales.reshape(1, -1)
+            scales.resize(1, 3)
 
-                ort_inputs = {
-                    'input': x,
-                    'input_lengths': x_len,
-                    'scales': scales,
-                    'sid': sid
-                }
+            ort_inputs = {
+                'input': x,
+                'input_lengths': x_len,
+                'scales': scales,
+                'sid': sid
+            }
 
-                # ort_inputs = {
-                #     'input': to_numpy(x),
-                #     'input_lengths': to_numpy(x_len),
-                #     'scales': to_numpy(scales),
-                #     'sid': to_numpy(sid)
-                # }
-                import time
-                # start_time = time.time()
-                start_time = time.perf_counter()
-                audio = np.squeeze(ort_sess.run(None, ort_inputs))
-                audio *= 32767.0 / max(0.01, np.max(np.abs(audio))) * 0.6
-                audio = np.clip(audio, -32767.0, 32767.0)
-                end_time = time.perf_counter()
-                # end_time = time.time()
-                print("infer time cost: ", end_time - start_time, "s")
+            # ort_inputs = {
+            #     'input': to_numpy(x),
+            #     'input_lengths': to_numpy(x_len),
+            #     'scales': to_numpy(scales),
+            #     'sid': to_numpy(sid)
+            # }
+            import time
+            # start_time = time.time()
+            start_time = time.perf_counter()
+            audio = np.squeeze(ort_sess.run(None, ort_inputs))
+            audio *= 32767.0 / max(0.01, np.max(np.abs(audio))) * 0.6
+            audio = np.clip(audio, -32767.0, 32767.0)
+            end_time = time.perf_counter()
+            # end_time = time.time()
+            print("infer time cost: ", end_time - start_time, "s")
 
-                wavfile.write(outdir + audio_path.split("/")[-1],
-                              hps.data.sampling_rate, audio.astype(np.int16))
+            wavfile.write(outdir + audio_path.split("/")[-1],
+                            hps.data.sampling_rate, audio.astype(np.int16))
 
 
 if __name__ == '__main__':

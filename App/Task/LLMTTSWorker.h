@@ -1,5 +1,5 @@
 #pragma once
-#include <QtCore/QThread>
+#include <QObject>
 
 class LLMTTSWorker : public QObject
 {

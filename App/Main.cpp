@@ -1,6 +1,6 @@
 #include "Win/Live2DWidget.h"
 
-#include <QtWidgets/QApplication>
+#include <QApplication>
 #include <LAppAllocator.hpp>
 #include <LAppPal.hpp>
 #include <Windows.h>
@@ -9,8 +9,6 @@
 #include "Process/PythonProcess.h"
 #include "Win/Systray.h"
 #include "Util/CubismHelper.hpp"
-
-#include <Live2DCubismCore.h>
 
 int main(int argc, char* argv[])
 {

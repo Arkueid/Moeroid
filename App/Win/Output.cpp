@@ -1,7 +1,7 @@
 #include "Output.h"
-#include <QtGui/QPainter>
-#include <QtGui/QFontMetrics>
-#include <QtGui/QMouseEvent>
+#include <QPainter>
+#include <QFontMetrics>
+#include <QMouseEvent>
 #include "../Config/StickState.h"
 
 Output::Output(): font("Arial", 12),
@@ -60,13 +60,13 @@ void Output::show(const QString& inText, const QWidget* anchor)
     {
         QRect bubbleRect(0, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
         resize(bubbleRect.width(), bubbleRect.height() + tailA);
-        move(anchor->x() + anchor->width() / 2 - width() / 2, anchor->y() + anchor->height() / 2);
+        move(anchor->x() + anchor->width() / 2 - width() / 2, anchor->y() - height());
 
         bubble.addRoundedRect(bubbleRect, radius, radius);
-        // tail.moveTo(bubbleRect.width()/2 - tailB, bubbleRect.height());
-        // tail.lineTo(bubbleRect.width()/2, bubbleRect.height() + tailA);
-        // tail.lineTo(bubbleRect.width()/2 + tailB, bubbleRect.height());
-        // tail.lineTo(bubbleRect.width()/2 - tailB, bubbleRect.height());
+        tail.moveTo(bubbleRect.width()/2 - tailB, bubbleRect.height());
+        tail.lineTo(bubbleRect.width()/2, bubbleRect.height() + tailA);
+        tail.lineTo(bubbleRect.width()/2 + tailB, bubbleRect.height());
+        tail.lineTo(bubbleRect.width()/2 - tailB, bubbleRect.height());
 
         textOffsetX = 0;
     }
@@ -74,7 +74,7 @@ void Output::show(const QString& inText, const QWidget* anchor)
     {
         QRect bubbleRect(tailA, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
         resize(bubbleRect.width() + tailA, bubbleRect.height());
-        move(anchor->x() + anchor->width() / 2 + tailA, anchor->y() + anchor->height() / 2);
+        move(anchor->x() + anchor->width() * 2 / 3 + tailA, anchor->y() + anchor->height() / 3);
 
         bubble.addRoundedRect(bubbleRect, radius, radius);
         tail.moveTo(tailA, bubbleRect.height() / 2 - tailB);
@@ -88,7 +88,7 @@ void Output::show(const QString& inText, const QWidget* anchor)
     {
         QRect bubbleRect(0, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
         resize(bubbleRect.width() + tailA, bubbleRect.height());
-        move(anchor->x() + anchor->width() / 2 - width() - tailA, anchor->y() + anchor->height() / 2);
+        move(anchor->x() + anchor->width() / 3 - width() - tailA, anchor->y() + anchor->height() / 3);
 
         bubble.addRoundedRect(bubbleRect, radius, radius);
         tail.moveTo(bubbleRect.width(), bubbleRect.height() / 2 - tailB);

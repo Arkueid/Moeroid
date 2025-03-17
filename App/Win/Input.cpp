@@ -1,9 +1,9 @@
 #include "Input.h"
 
 #include <iostream>
-#include <QtCore/QThread>
+#include <QThread>
 #include "../Task/LLMTTSWorker.h"
-#include <QtCore/QMetaObject>
+#include <QMetaObject>
 
 #include "Output.h"
 

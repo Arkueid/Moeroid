@@ -1,5 +1,5 @@
 #pragma once
-#include <QtCore/QJsonObject>
+#include <QJsonObject>
 #include "Process/PythonProcess.h"
 
 class MoeConfig : public QObject

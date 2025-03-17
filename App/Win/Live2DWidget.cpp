@@ -10,8 +10,8 @@
 
 #include <Windows.h>
 
-#include <QtWidgets/QMenu>
-#include <QtWidgets/qactiongroup.h>
+#include <QMenu>
+#include <QActionGroup>
 
 Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                leftButtonPressed(false),

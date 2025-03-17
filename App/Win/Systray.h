@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QtWidgets/QSystemTrayIcon>
+#include <QSystemTrayIcon>
 
 #include "../Config/MoeConfig.h"
 
