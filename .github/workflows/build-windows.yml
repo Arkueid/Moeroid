@@ -35,18 +35,6 @@ jobs:
         target: desktop # optional, default is desktop
         # Architecture for Windows/Android
         arch: win64_msvc2022_64 # optional
-        # Whether or not to install Qt dependencies on Linux
-        install-deps: false # optional, default is true
-        # Additional Qt modules to install
-        modules: none # optional
-        # Specify which Qt archive to install
-        archives: none # optional
-        # Whether or not to cache Qt automatically
-        cache: false # optional
-        # Cache key prefix for automatic cache
-        cache-key-prefix: install-qt-action # optional, default is install-qt-action
-        # Whether or not to automatically run setup-python to find a valid python version.
-        setup-python: false # optional, default is true  
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
