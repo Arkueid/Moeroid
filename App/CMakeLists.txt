@@ -3,7 +3,7 @@ set(CMAKE_AUTOMOC ON)   # 自动处理 Q_OBJECT 宏的元对象编译（moc）
 set(CMAKE_AUTOUIC ON)   # 自动编译 UI 文件（.ui → .h）
 set(CMAKE_AUTORCC ON)   # 自动编译资源文件（.qrc → .cpp）
 
-find_package(Qt6 COMPONENTS Core Widgets Gui OpenGLWidgets REQUIRED)
+find_package(Qt6 COMPONENTS Core Widgets Gui OpenGLWidgets LinguistTools REQUIRED)
 
 add_executable(${PROJECT_NAME}
     Main.cpp
@@ -12,6 +12,7 @@ add_executable(${PROJECT_NAME}
     Win/Live2DWidget.cpp
     Win/Output.cpp
     Win/Systray.cpp
+    Win/HistoryView.cpp
 
     Task/LLMTTSWorker.cpp
 
@@ -24,6 +25,9 @@ add_executable(${PROJECT_NAME}
     Config/StickState.cpp
 
     Util/CubismHelper.cpp
+
+    Sqlite/sqlite3.c
+    Sqlite/SQLite.cpp
 
     logo.rc
 )
@@ -55,6 +59,7 @@ target_link_libraries(${PROJECT_NAME}
     Qt6::Gui
     Qt6::OpenGLWidgets 
     Main
+    winmm.lib
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -74,3 +79,16 @@ add_custom_command(
         if not exist ${MARKER} (${CMAKE_PREFIX_PATH}/bin/windeployqt6.exe $<TARGET_FILE:${PROJECT_NAME}> && echo done. > ${MARKER}) else (echo deployed)
 )
 endif()
+
+set(ts_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/translations/moe_zh_CN.ts
+    ${CMAKE_CURRENT_SOURCE_DIR}/translations/moe_en.ts
+    ${CMAKE_CURRENT_SOURCE_DIR}/translations/moe_ja_JP.ts
+)
+
+# add_custom_target(update_translations ALL
+#     COMMAND Qt6::lupdate ${CMAKE_CURRENT_SOURCE_DIR} -ts ${ts_files}
+#     COMMENT "Updating translation files"
+# )
+
+qt6_add_translations(${PROJECT_NAME} TS_FILES ${ts_files})

@@ -113,7 +113,7 @@ void Live2DWidget::initializeGL()
     live2DModel->SetExpression(curExp.toStdString().c_str());
 
     menu = new QMenu(this);
-    QMenu* expMenu = menu->addMenu("表情");
+    QMenu* expMenu = menu->addMenu(tr("表情"));
     QActionGroup* group = new QActionGroup(expMenu);
     group->setExclusive(true);
     void* x[3] = {expMenu, group, &curExp};
@@ -129,7 +129,7 @@ void Live2DWidget::initializeGL()
         }
         group->addAction(action);
     });
-    expMenu->addAction("重置   ");
+    expMenu->addAction(tr("重置   "));
     connect(expMenu, &QMenu::triggered, [&](QAction* action){
         const std::string s = action->text().toStdString();
         if (s == "重置   ")

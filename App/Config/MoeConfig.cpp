@@ -42,6 +42,7 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     object["current"] = current;
     object["language"] = "CN";
     object["fps"] = 60;
+    object["dataDir"] = "../../Data";
 
     QJsonObject moefans, preferences, skin, models;
     preferences["offsetX"] = 0.0f;
@@ -60,7 +61,7 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     skins2.append(skin);
     moefans["skins"] = skins2;
     models["猫耳幻丝"] = moefans;
-    
+
     object["models"] = models;
     object["modelDir"] = "../../Resources";
 
@@ -112,13 +113,13 @@ float MoeConfig::getCurrentPreferenceFloat(const QString& key)
     return getPreferenceFloat(name, key);
 }
 
-QString MoeConfig::getCurrentPreferenceString(const QString &key)
+QString MoeConfig::getCurrentPreferenceString(const QString& key)
 {
     const QString& name = moeJson["current"].toObject()["name"].toString();
     return getPreferenceString(name, key);
 }
 
-void MoeConfig::setCurrentPreferenceString(const QString &key, const QString &value)
+void MoeConfig::setCurrentPreferenceString(const QString& key, const QString& value)
 {
     const QString& name = moeJson["current"].toObject()["name"].toString();
     setPreferenceString(name, key, value);
@@ -129,12 +130,12 @@ float MoeConfig::getPreferenceFloat(const QString& name, const QString& key)
     return moeJson["models"].toObject()[name].toObject()["preferences"].toObject()[key].toDouble();
 }
 
-QString MoeConfig::getPreferenceString(const QString &name, const QString &key)
+QString MoeConfig::getPreferenceString(const QString& name, const QString& key)
 {
     return moeJson["models"].toObject()[name].toObject()["preferences"].toObject()[key].toString();
 }
 
-void MoeConfig::setPreferenceString(const QString &name, const QString &key, const QString &value)
+void MoeConfig::setPreferenceString(const QString& name, const QString& key, const QString& value)
 {
     QJsonObject models = moeJson["models"].toObject();
     QJsonObject model = models[name].toObject();
@@ -147,7 +148,8 @@ void MoeConfig::setPreferenceString(const QString &name, const QString &key, con
 
 QString MoeConfig::getModelJson(const QString& name, int skin)
 {
-    return getString("modelDir").append("/") + moeJson["models"].toObject()[name].toObject()["skins"].toArray()[skin].toObject()["json"].toString();
+    return getString("modelDir").append("/") + moeJson["models"].toObject()[name].toObject()["skins"].toArray()[skin].
+        toObject()["json"].toString();
 }
 
 QString MoeConfig::getCurrentModelJson()
@@ -163,7 +165,8 @@ QString MoeConfig::getCurrentModelDesc()
     const QJsonObject& obj = moeJson["current"].toObject();
     const QString& name = obj["name"].toString();
     const int skin = obj["skin"].toInt();
-    return name + ":" + moeJson["models"].toObject()[name].toObject()["skins"].toArray()[skin].toObject()["name"].toString();
+    return name + ":" + moeJson["models"].toObject()[name].toObject()["skins"].toArray()[skin].toObject()["name"].
+        toString();
 }
 
 QString MoeConfig::getCurrentName()
@@ -186,7 +189,7 @@ QString MoeConfig::getCommand()
     return moeJson["command"].toString();
 }
 
-void MoeConfig::setCurrent(const QString &name, const int skin)
+void MoeConfig::setCurrent(const QString& name, const int skin)
 {
     QJsonObject obj = moeJson["current"].toObject();
     obj["name"] = name;

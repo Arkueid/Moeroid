@@ -17,9 +17,10 @@ Systray::~Systray()
     delete menu;
 }
 
-void Systray::initialize(MoeConfig* config)
+void Systray::initialize(MoeConfig* config, QWidget* view)
 {
     moeConfig = config;
+    history = view;
 
     setIcon(QIcon(config->getString("modelDir").append("/16x16.ico")));
     setToolTip("Moeroid");
@@ -27,7 +28,7 @@ void Systray::initialize(MoeConfig* config)
     menu = new QMenu();
     descAction = menu->addAction(config->getCurrentModelDesc());
     descAction->setEnabled(false);
-    QAction* stayOnTopAction = new QAction("置顶模式", this);
+    QAction* stayOnTopAction = new QAction(tr("置顶模式"), this);
     stayOnTopAction->setCheckable(true);
     stayOnTopAction->setChecked(moeConfig->getBoolean("stayOnTop"));
     connect(stayOnTopAction, &QAction::triggered, moeConfig, &MoeConfig::setStayOnTop);
@@ -36,17 +37,17 @@ void Systray::initialize(MoeConfig* config)
     
     const QString& clan = config->getLan();
 
-    QMenu* lanMenu = menu->addMenu("语音");
+    QMenu* lanMenu = menu->addMenu(tr("语音"));
     QActionGroup* group = new QActionGroup(this);
     group->setExclusive(true);
     
-    QAction *cnAction = lanMenu->addAction("CN");
+    QAction *cnAction = lanMenu->addAction(tr("CN"));
     cnAction->setCheckable(true);
     cnAction->setChecked(clan == "CN");
-    QAction *jpAction = lanMenu->addAction("JP");
+    QAction *jpAction = lanMenu->addAction(tr("JP"));
     jpAction->setCheckable(true);
     jpAction->setChecked(clan == "JP");
-    QAction* enAction = lanMenu->addAction("EN");
+    QAction* enAction = lanMenu->addAction(tr("EN"));
     enAction->setCheckable(true);
     enAction->setChecked(clan == "EN");
     
@@ -64,7 +65,7 @@ void Systray::initialize(MoeConfig* config)
     });
 
 
-    QMenu* modelMenu = menu->addMenu("模型");
+    QMenu* modelMenu = menu->addMenu(tr("模型"));
     QActionGroup* skinGroup = new QActionGroup(this);
     skinGroup->setExclusive(true);
     const QString& currentName = config->getCurrentName();
@@ -92,7 +93,13 @@ void Systray::initialize(MoeConfig* config)
         }
     }
 
-    QAction* quitAction = new QAction("退出", this);
+    QAction* historyAction = new QAction(tr("聊天记录"), this);
+    menu->addAction(historyAction);
+    connect(historyAction, &QAction::triggered, [&](){
+        history->show();
+    });
+
+    QAction* quitAction = new QAction(tr("退出"), this);
     menu->addSeparator();
     menu->addAction(quitAction);
 

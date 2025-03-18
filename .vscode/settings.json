@@ -19,6 +19,7 @@
         "qpainterpath": "cpp",
         "qwidget": "cpp",
         "qmetaobject": "cpp",
-        "qobject": "cpp"
+        "qobject": "cpp",
+        "qlistwidgetitem": "cpp"
     }
 }
