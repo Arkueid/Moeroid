@@ -1,12 +1,16 @@
+import sys
+import os
+cd = os.path.split(__file__)[0]
+
+sys.path.append(cd)
+
 import logging
 import struct
 import config
-import os
 import time
 import uuid
 import sqlite3
 
-cd = os.path.split(__file__)[0]
 data_dir = os.path.join(cd, "..", "Data")
 if not os.path.exists(data_dir):
     os.makedirs(data_dir)
@@ -59,7 +63,7 @@ logging.info(f"current lan: {lan}")
 # model = "neko:qwen2.5-0.5b"
 # model = "neko:gemma3-1b"
 # model = "neko:qwen2.5-1.5b"
-model = "neko:qwen2.5-inst-0.5b"
+model = "neko:0"
 
 history = []
 

@@ -1,6 +1,12 @@
+import os
+
+cd = os.path.split(__file__)[0]
+
+import sys
+
+sys.path.append(cd)
+
 import logging
-import threading
-import time
 
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
@@ -53,7 +59,7 @@ def on_response(text: str):
         __text = t
 
 
-model = "neko:gemma3-1b"
+model = "neko:0"
 history = []
 while True:
     x = input(">>>")

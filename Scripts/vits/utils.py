@@ -7,8 +7,8 @@ import subprocess
 import sys
 
 import numpy as np
-from scipy.io.wavfile import read
 try:
+    from scipy.io.wavfile import read
     import torch
 except:
     pass

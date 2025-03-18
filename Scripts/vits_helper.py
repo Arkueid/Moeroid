@@ -13,7 +13,7 @@
 # limitations under the License.
 from vits.text import text_to_sequence
 import numpy as np
-from scipy.io import wavfile
+import wave
 import json
 import vits.commons as commons
 import vits.utils as utils
@@ -105,10 +105,21 @@ def tts(text: str, array=False, both=False):
         return audio, hps.data.sampling_rate
     
     buffer = io.BytesIO()
-    wavfile.write(buffer,
-                hps.data.sampling_rate, audio)
+    with wave.open(buffer, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(hps.data.sampling_rate)
+        wf.writeframes(audio.tobytes())
+
     if not both:
         with buffer:
             return buffer.getvalue()
     
     return (audio, hps.data.sampling_rate), buffer
+
+
+if __name__ == "__main__":
+    init_onnx_model()
+
+    with open("test.wav", "wb") as f:
+        f.write(tts("[ZH]你好，我是一只猫娘。[ZH]"))
