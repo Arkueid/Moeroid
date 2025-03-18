@@ -71,14 +71,17 @@ file(COPY ${PROJECT_ROOT}/Resources/16x16.ico DESTINATION ${CMAKE_CURRENT_BINARY
 
 set(MARKER $<IF:$<CONFIG:DEBUG>,${PROJECT_ROOT}/x64/Debug/.deployed,${PROJECT_ROOT}/x64/Release/.deployed>)
 
-if (WIN32)
+# 获取 windeployqt6 工具的路径
+get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)
+get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
+find_program(WINDEPLOYQT_EXECUTABLE windeployqt6 HINTS "${_qt_bin_dir}")
+
 add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND
-        if not exist ${MARKER} (${CMAKE_PREFIX_PATH}/bin/windeployqt6.exe $<TARGET_FILE:${PROJECT_NAME}> && echo done. > ${MARKER}) else (echo deployed)
+        if not exist ${MARKER} (${WINDEPLOYQT_EXECUTABLE} $<TARGET_FILE:${PROJECT_NAME}> && echo done. > ${MARKER}) else (echo deployed)
 )
-endif()
 
 set(ts_files
     ${CMAKE_CURRENT_SOURCE_DIR}/translations/moe_zh_CN.ts
@@ -86,9 +89,5 @@ set(ts_files
     ${CMAKE_CURRENT_SOURCE_DIR}/translations/moe_ja_JP.ts
 )
 
-# add_custom_target(update_translations ALL
-#     COMMAND Qt6::lupdate ${CMAKE_CURRENT_SOURCE_DIR} -ts ${ts_files}
-#     COMMENT "Updating translation files"
-# )
-
 qt6_add_translations(${PROJECT_NAME} TS_FILES ${ts_files})
+
