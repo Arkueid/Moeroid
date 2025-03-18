@@ -41,6 +41,7 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     current["skin"] = 0;
     object["current"] = current;
     object["language"] = "CN";
+    object["fps"] = 60;
 
     QJsonObject moefans, preferences, skin, models;
     preferences["offsetX"] = 0.0f;
@@ -215,6 +216,11 @@ void MoeConfig::setLan(LAN lan)
 QString MoeConfig::getLan()
 {
     return moeJson["language"].toString();
+}
+
+int MoeConfig::getFps()
+{
+    return moeJson["fps"].toInt();
 }
 
 void MoeConfig::setStayOnTop(bool value)

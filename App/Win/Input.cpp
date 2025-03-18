@@ -4,10 +4,11 @@
 #include <QThread>
 #include "../Task/LLMTTSWorker.h"
 #include <QMetaObject>
+#include <QGraphicsDropShadowEffect>
 
 #include "Output.h"
 
-Input::Input(): backgroundColor("#FFD9E8")
+Input::Input() : backgroundColor("#FFD9E8"), shadowColor(0, 0, 0, 64), shadowWidth(2)
 {
     ui.setupUi(this);
 
@@ -16,13 +17,13 @@ Input::Input(): backgroundColor("#FFD9E8")
 
     connect(ui.sendBtn, &QPushButton::clicked, this, &Input::onInput);
 
-    connect(ui.closeBtn, &QPushButton::clicked, this, &Input::close);
+    connect(ui.closeBtn, &QPushButton::clicked, this, &Input::hide);
 
     thread = new QThread();
     thread->start();
 
     worker = new LLMTTSWorker();
-    worker->moveToThread(thread);  // worker 的信号槽会在该线程中执行
+    worker->moveToThread(thread); // worker 的信号槽会在该线程中执行
 
     connect(worker, &LLMTTSWorker::textReceived, this, &Input::onTextReceived);
 
@@ -39,13 +40,16 @@ Input::~Input()
     output->deleteLater();
 }
 
-void Input::paintEvent(QPaintEvent* event)
+void Input::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    
+
+    painter.setBrush(shadowColor);
+    painter.drawRoundedRect(0, 0, width(), height(), 10, 10);
+
     painter.setBrush(backgroundColor);
-    painter.drawRoundedRect(this->rect(), 8, 8);
+    painter.drawRoundedRect(shadowWidth, shadowWidth, width() - shadowWidth * 2, height() - shadowWidth * 2, 8, 8);
 }
 
 void Input::onInput() const
@@ -61,7 +65,7 @@ void Input::onInput() const
     QMetaObject::invokeMethod(worker, "startWork", Qt::QueuedConnection, text);
 }
 
-void Input::onTextReceived(const QString& text) const
+void Input::onTextReceived(const QString &text) const
 {
     output->show(text, anchor);
 }
@@ -73,7 +77,7 @@ void Input::onTextReceiveFinished() const
     ui.editor->setReadOnly(false);
 }
 
-void Input::mousePressEvent(QMouseEvent* event)
+void Input::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -86,7 +90,7 @@ void Input::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void Input::mouseReleaseEvent(QMouseEvent* event)
+void Input::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -94,7 +98,7 @@ void Input::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-void Input::mouseMoveEvent(QMouseEvent* event)
+void Input::mouseMoveEvent(QMouseEvent *event)
 {
     if (leftButtonPressed)
     {
@@ -105,7 +109,7 @@ void Input::mouseMoveEvent(QMouseEvent* event)
     }
 }
 
-void Input::keyPressEvent(QKeyEvent* event)
+void Input::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape)
     {

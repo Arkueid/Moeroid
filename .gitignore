@@ -3,3 +3,9 @@ x64
 *.zip
 moe.todo.md
 moe.config.json
+font.ttf
+gen.bat
+gen.py
+glyph_python.png
+Nyashi.ttf
+test.py

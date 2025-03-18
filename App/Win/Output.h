@@ -13,6 +13,8 @@ class Output : public QWidget
     
     QPainterPath bubble;
     QPainterPath tail;
+    QPainterPath shadowBubble;
+    QPainterPath shadowTail;
 
     int padding;
     int textOffsetX;
@@ -22,7 +24,10 @@ class Output : public QWidget
 
     int maxWidth;
 
+    int shadowWidth;
+
     QColor color;
+    QColor shadowColor;
 
 public:
     Output();

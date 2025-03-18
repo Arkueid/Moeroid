@@ -53,6 +53,8 @@ public:
 
     QString getLan();
 
+    int getFps();
+
 signals:
     void stayOnTopChanged(bool);
     void currentModelChanged(void);

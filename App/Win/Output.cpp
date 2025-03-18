@@ -4,28 +4,34 @@
 #include <QMouseEvent>
 #include "../Config/StickState.h"
 
-Output::Output(): font("Arial", 12),
-                  metrics(font),
-                  padding(10),
-                  radius(10),
-                  maxWidth(306),
-                  color(250, 250, 250, 255),
-                  tailA(15),
-                  tailB(5)
+#include <QGraphicsDropShadowEffect>
+
+Output::Output() : font("微软雅黑", 12),
+                   metrics(font),
+                   padding(10),
+                   radius(10),
+                   maxWidth(306),
+                   color(250, 250, 250, 255),
+                   shadowColor(0, 0, 0, 64),
+                   tailA(15),
+                   tailB(5),
+                   shadowWidth(1)
 {
-    setWindowFlags(Qt::SubWindow | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
+
+    setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
     connect(&timer, &QTimer::timeout, this, &Output::close);
 }
 
-Output::~Output()
-= default;
+Output::~Output() = default;
 
-void Output::paintEvent(QPaintEvent* event)
+void Output::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::Antialiasing, true);
 
+    painter.fillPath(shadowBubble, shadowColor);
+    painter.fillPath(shadowTail, shadowColor);
     painter.fillPath(bubble, color);
     painter.fillPath(tail, color);
 
@@ -34,7 +40,7 @@ void Output::paintEvent(QPaintEvent* event)
     painter.drawText(textOffsetX + padding, padding, fontRect.width(), fontRect.height(), Qt::AlignLeft | Qt::TextWordWrap, text);
 }
 
-void Output::mousePressEvent(QMouseEvent* event)
+void Output::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -42,8 +48,7 @@ void Output::mousePressEvent(QMouseEvent* event)
     }
 }
 
-
-void Output::show(const QString& inText, const QWidget* anchor)
+void Output::show(const QString &inText, const QWidget *anchor)
 {
     timer.stop();
     hide();
@@ -55,48 +60,74 @@ void Output::show(const QString& inText, const QWidget* anchor)
 
     bubble.clear();
     tail.clear();
+    shadowBubble.clear();
+    shadowTail.clear();
+
+    const int marginTotal = shadowWidth * 2;
+    const int repairRadius = radius + 2;
 
     if (state == STICK_NONE)
     {
-        QRect bubbleRect(0, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
-        resize(bubbleRect.width(), bubbleRect.height() + tailA);
+        QRect bubbleRect(shadowWidth, shadowWidth, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
+        resize(marginTotal + bubbleRect.width(), bubbleRect.height() + tailA + marginTotal);
         move(anchor->x() + anchor->width() / 2 - width() / 2, anchor->y() - height());
 
         bubble.addRoundedRect(bubbleRect, radius, radius);
-        tail.moveTo(bubbleRect.width()/2 - tailB, bubbleRect.height());
-        tail.lineTo(bubbleRect.width()/2, bubbleRect.height() + tailA);
-        tail.lineTo(bubbleRect.width()/2 + tailB, bubbleRect.height());
-        tail.lineTo(bubbleRect.width()/2 - tailB, bubbleRect.height());
+        tail.moveTo(shadowWidth + bubbleRect.width() / 2 - tailB, shadowWidth + bubbleRect.height());
+        tail.lineTo(shadowWidth + bubbleRect.width() / 2, shadowWidth + bubbleRect.height() + tailA);
+        tail.lineTo(shadowWidth + bubbleRect.width() / 2 + shadowWidth + tailB, bubbleRect.height());
+        tail.lineTo(shadowWidth + bubbleRect.width() / 2 - shadowWidth + tailB, bubbleRect.height());
 
-        textOffsetX = 0;
+        QRect sbr(0, 0, bubbleRect.width() + marginTotal, bubbleRect.height() + marginTotal);
+        shadowBubble.addRoundedRect(sbr, repairRadius, repairRadius);
+        shadowTail.moveTo(sbr.width() / 2 - tailB, sbr.height());
+        shadowTail.lineTo(sbr.width() / 2, sbr.height() + tailA);
+        shadowTail.lineTo(sbr.width() / 2 + tailB, sbr.height());
+        shadowTail.lineTo(sbr.width() / 2 + tailB, sbr.height());
+
+        textOffsetX = shadowWidth;
     }
     else if (state == STICK_LEFT) // left
     {
-        QRect bubbleRect(tailA, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
-        resize(bubbleRect.width() + tailA, bubbleRect.height());
+        QRect bubbleRect(shadowWidth + tailA, shadowWidth, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
+        resize(bubbleRect.width() + tailA + marginTotal, bubbleRect.height() + marginTotal);
         move(anchor->x() + anchor->width() * 2 / 3 + tailA, anchor->y() + anchor->height() / 3);
 
         bubble.addRoundedRect(bubbleRect, radius, radius);
-        tail.moveTo(tailA, bubbleRect.height() / 2 - tailB);
-        tail.lineTo(0, bubbleRect.height() / 2);
-        tail.lineTo(tailA, bubbleRect.height() / 2 + tailB);
-        tail.lineTo(tailA, bubbleRect.height() / 2 - tailB);
+        tail.moveTo(shadowWidth + tailA, shadowWidth + bubbleRect.height() / 2 - tailB);
+        tail.lineTo(shadowWidth, shadowWidth + bubbleRect.height() / 2);
+        tail.lineTo(shadowWidth + tailA, shadowWidth + bubbleRect.height() / 2 + tailB);
+        tail.lineTo(shadowWidth + tailA, shadowWidth + bubbleRect.height() / 2 - tailB);
 
-        textOffsetX = tailA;
+        QRect sbr(tailA, 0, bubbleRect.width() + marginTotal, bubbleRect.height() + marginTotal);
+        shadowBubble.addRoundedRect(sbr, repairRadius, repairRadius);
+        shadowTail.moveTo(tailA, sbr.height() / 2 - tailB);
+        shadowTail.lineTo(0, sbr.height() / 2);
+        shadowTail.lineTo(tailA, sbr.height() / 2 + tailB);
+        shadowTail.lineTo(tailA, sbr.height() / 2 - tailB);
+
+        textOffsetX = tailA + shadowWidth;
     }
     else if (state == STICK_RIGHT) // right
     {
-        QRect bubbleRect(0, 0, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
-        resize(bubbleRect.width() + tailA, bubbleRect.height());
+        QRect bubbleRect(shadowWidth, shadowWidth, fontRect.width() + padding * 2, fontRect.height() + padding * 2);
+        resize(bubbleRect.width() + tailA + marginTotal, bubbleRect.height() + marginTotal);
         move(anchor->x() + anchor->width() / 3 - width() - tailA, anchor->y() + anchor->height() / 3);
 
         bubble.addRoundedRect(bubbleRect, radius, radius);
-        tail.moveTo(bubbleRect.width(), bubbleRect.height() / 2 - tailB);
-        tail.lineTo(bubbleRect.width() + tailA, bubbleRect.height() / 2);
-        tail.lineTo(bubbleRect.width(), bubbleRect.height() / 2 + tailB);
-        tail.lineTo(bubbleRect.width(), bubbleRect.height() / 2 - tailB);
+        tail.moveTo(shadowWidth + bubbleRect.width(), shadowWidth + bubbleRect.height() / 2 - tailB);
+        tail.lineTo(shadowWidth + bubbleRect.width() + tailA, shadowWidth + bubbleRect.height() / 2);
+        tail.lineTo(shadowWidth + bubbleRect.width(), shadowWidth + bubbleRect.height() / 2 + tailB);
+        tail.lineTo(shadowWidth + bubbleRect.width(), shadowWidth + bubbleRect.height() / 2 - tailB);
 
-        textOffsetX = 0;
+        QRect sbr(0, 0, bubbleRect.width() + marginTotal, bubbleRect.height() + marginTotal);
+        shadowBubble.addRoundedRect(sbr, repairRadius, repairRadius);
+        shadowTail.moveTo(sbr.width(), sbr.height() / 2 - tailB);
+        shadowTail.lineTo(sbr.width() + tailA, sbr.height() / 2);
+        shadowTail.lineTo(sbr.width(), sbr.height() / 2 + tailB);
+        shadowTail.lineTo(sbr.width(), sbr.height() / 2 - tailB);
+
+        textOffsetX = shadowWidth;
     }
 
     QWidget::show();

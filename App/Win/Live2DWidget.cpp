@@ -67,6 +67,8 @@ void Live2DWidget::initialize(MoeConfig* config)
 {
     this->config = config;
 
+    framesThresholdRightPress = config->getFps() / 3;
+
     setWindowFlag(Qt::WindowStaysOnTopHint, config->getBoolean("stayOnTop"));
     connect(config, &MoeConfig::stayOnTopChanged, this, [&](bool on)
     {
@@ -100,7 +102,7 @@ void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
-    ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
+    // ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
     // load model assets
     const std::string& path = config->getCurrentModelJson().toStdString();
     live2DModel->LoadModelJson(path.c_str());
@@ -143,7 +145,7 @@ void Live2DWidget::initializeGL()
         configSaveTimer.start();
     });
     
-    startTimer(1000 / 60);
+    startTimer(1000 / config->getFps());
 }
 
 void Live2DWidget::resizeGL(int w, int h)
@@ -306,7 +308,11 @@ void Live2DWidget::processDrag(float mx, float my)
     // 窗口中心全局坐标
     const float halfWW = wWidth / 2;
     const float halfWH = wHeight / 2;
-    const float tcx = x() + halfWW;
+
+    // 贴右边缘时窗口中心恰好在屏幕边缘，此时若以窗口中心为分界点，则无法向右看
+    float tcx = min(x() + halfWW, screenWidth - (screenWidth - x()) / 2);
+    // 左边缘
+    tcx = max((x() + width()) / 2, tcx);
     const float tcy = y() + halfWH;
     
     if (mx <= tcx)

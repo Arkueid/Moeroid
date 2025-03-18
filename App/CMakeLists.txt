@@ -25,8 +25,6 @@ add_executable(${PROJECT_NAME}
 
     Util/CubismHelper.cpp
 
-    UI/Input.ui
-
     logo.rc
 )
 
@@ -66,14 +64,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 file(COPY ${PROJECT_ROOT}/Resources/16x16.ico DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-add_custom_command(TARGET ${PROJECT_NAME}
+set(MARKER $<IF:$<CONFIG:DEBUG>,${PROJECT_ROOT}/x64/Debug/.deployed,${PROJECT_ROOT}/x64/Release/.deployed>)
+
+if (WIN32)
+add_custom_command(
+    TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND
-    ${CMAKE_PREFIX_PATH}/bin/windeployqt6.exe $<TARGET_FILE:${PROJECT_NAME}>
+        if not exist ${MARKER} (${CMAKE_PREFIX_PATH}/bin/windeployqt6.exe $<TARGET_FILE:${PROJECT_NAME}> && echo done. > ${MARKER}) else (echo deployed)
 )
-
-add_custom_command(TARGET ${PROJECT_NAME}
-    PRE_BUILD
-    COMMAND
-    ${CMAKE_PREFIX_PATH}/bin/uic.exe ${CMAKE_CURRENT_SOURCE_DIR}/UI/Input.ui -o ${CMAKE_CURRENT_SOURCE_DIR}/UI/Input.h
-)
+endif()

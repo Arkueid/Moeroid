@@ -1,7 +1,7 @@
 #pragma once
 #include <QMouseEvent>
 
-#include "../ui/Input.h"
+#include "ui_Input.h"
 #include <QPainter>
 
 class Output;
@@ -26,6 +26,9 @@ class Input : public QWidget
     QWidget* anchor;
 
     QColor backgroundColor;
+    QColor shadowColor;
+
+    int shadowWidth;
 
 public:
     Input();
