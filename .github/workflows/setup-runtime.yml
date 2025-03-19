@@ -21,7 +21,7 @@ jobs:
 
     - name: Download Files
       shell: powershell
-      run: download.ps1
+      run: .\download.ps1
     
     - name: Setup Runtime
       run: |
