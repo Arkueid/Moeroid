@@ -1,0 +1,11 @@
+
+pyopenjtalk
+unidecode
+pypinyin
+jieba
+cn2an
+tqdm
+sounddevice
+requests
+onnxruntime
+# 移除sympy可减少60MB

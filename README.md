@@ -1,0 +1,16 @@
+# Moeroid
+
+低配 AI 桌宠，全 cpu 推理。
+
+测试设备：Intel core i3 + 8GB
+
+* 大模型：ollama qwen2.5:1.5b（对于常驻桌面，回答日常对话应该是绰绰有余了）
+    * 使用 `requests` 库对本地 ollama 发起请求
+* 文本转语音：vits onnx
+    * 将 CjangCjengh 大佬发布的 [vits 模型](https://sjtueducn-my.sharepoint.com/:u:/g/personal/cjang_cjengh_sjtu_edu_cn/EQ0IKHchgzZAt0E6GryW17EBsIlIkmby6BcO9FtoODjwNQ?e=5uzWtj) 转为 onnx 模型
+* Live2D: 
+    * CubismNativeSDK + Qt，对于所有纹理总像素在 1024x1024 左右的模型，运行内存占用在 50M 左右
+    * [降低 Live2D 模型运行内存占用的方法](https://github.com/Arkueid/live2d-py/issues/47)
+
+
+主要思路：C++主进程 + Python子进程 + 管道通信，llm 流式输出 + tts 拆分生成

@@ -1,0 +1,25 @@
+{
+    "files.associations": {
+        "algorithm": "cpp",
+        "xlocmon": "cpp",
+        "xutility": "cpp",
+        "future": "cpp",
+        "system_error": "cpp",
+        "chrono": "cpp",
+        "variant": "cpp",
+        "qsystemtrayicon": "cpp",
+        "charconv": "cpp",
+        "cstdio": "cpp",
+        "xlocale": "cpp",
+        "xiosbase": "cpp",
+        "qfontmetrics": "cpp",
+        "qpainter": "cpp",
+        "qmouseevent": "cpp",
+        "qtimer": "cpp",
+        "qpainterpath": "cpp",
+        "qwidget": "cpp",
+        "qmetaobject": "cpp",
+        "qobject": "cpp",
+        "qlistwidgetitem": "cpp"
+    }
+}
