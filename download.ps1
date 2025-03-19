@@ -13,7 +13,7 @@ Expand-Archive -Path $pythonZip -DestinationPath $pythonDir
 Invoke-WebRequest -Uri "https://bootstrap.pypa.io/get-pip.py" -OutFile "$pythonDir\get-pip.py"
 
 # 下载 onnx 模型
-Invoke-WebRequest -Uri "https://github.com/Arkueid/Moeroid/releases/download/onnx-model/gal_cj.onnx" -OutFile .\Scripts\models\gal_cj.onnx
+# Invoke-WebRequest -Uri "https://github.com/Arkueid/Moeroid/releases/download/onnx-model/gal_cj.onnx" -OutFile .\Scripts\models\gal_cj.onnx
 # 打包
 # Compress-Archive -Path $pythonDir -DestinationPath "python-portable.zip"
 

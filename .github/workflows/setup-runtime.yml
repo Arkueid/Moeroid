@@ -26,6 +26,7 @@ jobs:
     - name: Setup Runtime
       run: |
         .\Runtime\python.exe .\Runtime\get-pip.py
+        .\Runtime\python.exe -m pip install setuptools numpy
         .\Runtime\python.exe -m pip install -r .\Scripts\requirements.txt
         .\Runtime\python.exe -m pip uninstall sympy -y
 
