@@ -52,9 +52,7 @@ jobs:
     - name: Zip the folder
       shell: powershell
       run: |
-        $folderToZip = '${{github.workspace}}/x64, ${{github.workspace}}/Ollama, ${{github.workspace}}/Scripts, ${{github.workspace}}/Resources'
-        $zipFilePath = '${{github.workspace}}/moeroid-win64.zip'
-        Compress-Archive -Path $folderToZip -DestinationPath $zipFilePath
+        Compress-Archive -Path ${{github.workspace}}/x64, ${{github.workspace}}/Ollama, ${{github.workspace}}/Scripts, ${{github.workspace}}/Resources -DestinationPath ${{github.workspace}}/Moeroid-win64.zip
 
     - name: Upload Wheel to Release
       uses: softprops/action-gh-release@v2
