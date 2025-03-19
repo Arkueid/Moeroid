@@ -49,14 +49,10 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config Release
 
-    - name: Setup-Runtime
-      shell: powershell
-      run: ${{github.workspace}}/setup-runtime.ps1
-
     - name: Zip the folder
       shell: powershell
       run: |
-        $folderToZip = '${{github.workspace}}/x64,${{github.workspace}}/Runtime,${{github.workspace}}/Ollama,${{github.workspace}}/Scripts,${{github.workspace}}/Resources'
+        $folderToZip = '${{github.workspace}}/x64, ${{github.workspace}}/Ollama, ${{github.workspace}}/Scripts, ${{github.workspace}}/Resources'
         $zipFilePath = '${{github.workspace}}/moeroid-win64.zip'
         Compress-Archive -Path $folderToZip -DestinationPath $zipFilePath
 
@@ -65,4 +61,4 @@ jobs:
       with:
         tag_name: Daily-Build
         files: |
-          ${{github.workspace}}/moeroid-win64.zip
+          ${{github.workspace}}/Moeroid-win64.zip
