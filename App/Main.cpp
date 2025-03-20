@@ -12,6 +12,7 @@
 #include "Sqlite/SQLite.h"
 #include "Win/Systray.h"
 #include "Util/CubismHelper.hpp"
+#include "Task/LLMTTSWorker.h"
 
 #include <QTranslator>
 
@@ -60,6 +61,9 @@ int main(int argc, char* argv[])
     Live2DWidget* win = new Live2DWidget();
     win->initialize(&moeConfig);
     win->show();
+
+    QObject::connect(win->getWorker(), &LLMTTSWorker::textReceived, &view, &HistoryView::onMsgReceived);
+    QObject::connect(win->getWorker(), &LLMTTSWorker::textReceiveFinished, &view, &HistoryView::onMsgReceived);
 
     QObject::connect(&moeConfig, &MoeConfig::currentModelChanged, [&]() {
         delete win;

@@ -91,9 +91,9 @@ void Live2DWidget::initialize(MoeConfig* config)
     connect(&configSaveTimer, &QTimer::timeout, this, &Live2DWidget::saveConfig);
 }
 
-StickState Live2DWidget::getStickState() const
+const LLMTTSWorker *Live2DWidget::getWorker() const
 {
-    return stickState;
+    return input->getWorker();
 }
 
 typedef bool (__stdcall *SwapInterval)(int);

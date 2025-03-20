@@ -13,6 +13,8 @@ class HistoryView: public QWidget
 
     QString audioDir;
 
+    QMetaObject::Connection conn;
+
 public:
     HistoryView(const QString& path);
     ~HistoryView() override;
@@ -21,4 +23,5 @@ protected:
     void showEvent(QShowEvent* event) override;
 public slots:
     void updateList();
+    void onMsgReceived();
 };

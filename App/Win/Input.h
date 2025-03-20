@@ -40,7 +40,7 @@ public:
     void mouseReleaseEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
-
+    const LLMTTSWorker* getWorker() const;
     void setAnchor(QWidget* inAnchor);
 signals:
     void onInput() const;

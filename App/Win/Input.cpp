@@ -116,3 +116,8 @@ void Input::keyPressEvent(QKeyEvent *event)
         close();
     }
 }
+
+const LLMTTSWorker *Input::getWorker() const
+{
+    return worker;
+}

@@ -9,6 +9,8 @@ class Input;
 
 #include "../Config/StickState.h"
 
+class LLMTTSWorker;
+
 class Live2DWidget : public QOpenGLWidget
 {
     Q_OBJECT
@@ -53,7 +55,7 @@ public:
     Live2DWidget();
     ~Live2DWidget() override;
     void initialize(MoeConfig* config);
-    StickState getStickState() const;
+    const LLMTTSWorker* getWorker() const;
 
 protected:
     void initializeGL() override;
