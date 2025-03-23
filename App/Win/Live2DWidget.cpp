@@ -12,6 +12,7 @@
 
 #include <QMenu>
 #include <QActionGroup>
+#include <QStyle>
 
 Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                leftButtonPressed(false),
@@ -38,12 +39,17 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
     input = new Input();
     input->setAnchor(this);
 
-    const QRect& rect = QGuiApplication::primaryScreen()->geometry();
+    const QRect &rect = QGuiApplication::primaryScreen()->geometry();
     screenWidth = rect.width();
     screenHeight = rect.height();
 
     configSaveTimer.setSingleShot(true);
     configSaveTimer.setInterval(2000);
+
+    QCursor cursor;
+    cursor.setShape(Qt::CursorShape::PointingHandCursor);
+
+    setCursor(cursor);
 }
 
 Live2DWidget::~Live2DWidget()
@@ -60,7 +66,7 @@ Live2DWidget::~Live2DWidget()
     }
 }
 
-void Live2DWidget::initialize(MoeConfig* config)
+void Live2DWidget::initialize(MoeConfig *config)
 {
     this->config = config;
 
@@ -68,10 +74,9 @@ void Live2DWidget::initialize(MoeConfig* config)
 
     setWindowFlag(Qt::WindowStaysOnTopHint, config->getBoolean("stayOnTop"));
     connect(config, &MoeConfig::stayOnTopChanged, this, [&](bool on)
-    {
+            {
         setWindowFlag(Qt::WindowStaysOnTopHint, on);
-        show();
-    });
+        show(); });
 
     move(config->getInt("windowX"), config->getInt("windowY"));
 
@@ -93,28 +98,29 @@ const LLMTTSWorker *Live2DWidget::getWorker() const
     return input->getWorker();
 }
 
-typedef bool (__stdcall *SwapInterval)(int);
+// typedef bool(__stdcall *SwapInterval)(int);
 
 void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
-    ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
+    // ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
     // load model assets
-    const std::string& path = config->getCurrentModelJson().toStdString();
+    const std::string &path = config->getCurrentModelJson().toStdString();
     live2DModel->LoadModelJson(path.c_str());
-    const Csm::CubismId* handle = Csm::CubismFramework::GetIdManager()->GetId("ParamMouthOpenY");
+    const Csm::CubismId *handle = Csm::CubismFramework::GetIdManager()->GetId("ParamMouthOpenY");
     iParamMouthOpenY = live2DModel->GetModel()->GetParameterIndex(handle);
 
     QString curExp = config->getCurrentPreferenceString("expression");
     live2DModel->SetExpression(curExp.toStdString().c_str());
 
     menu = new QMenu(this);
-    QMenu* expMenu = menu->addMenu(tr("表情"));
-    QActionGroup* group = new QActionGroup(expMenu);
+    QMenu *expMenu = menu->addMenu(tr("表情"));
+    QActionGroup *group = new QActionGroup(expMenu);
     group->setExclusive(true);
-    void* x[3] = {expMenu, group, &curExp};
-    live2DModel->GetExpressionIds(x, [](void* collector, const char* expId) {
+    void *x[3] = {expMenu, group, &curExp};
+    live2DModel->GetExpressionIds(x, [](void *collector, const char *expId)
+                                  {
         QMenu* expMenu = (QMenu*)((void**)collector)[0];
         QActionGroup* group = (QActionGroup*)((void**)collector)[1];
         QAction* action = expMenu->addAction(expId);
@@ -124,10 +130,10 @@ void Live2DWidget::initializeGL()
         {
             action->setChecked(true);
         }
-        group->addAction(action);
-    });
+        group->addAction(action); });
     expMenu->addAction(tr("重置   "));
-    connect(expMenu, &QMenu::triggered, [&](QAction* action){
+    connect(expMenu, &QMenu::triggered, [&](QAction *action)
+            {
         const std::string s = action->text().toStdString();
         if (s == "重置   ")
         {
@@ -139,9 +145,8 @@ void Live2DWidget::initializeGL()
             config->setCurrentPreferenceString("expression", s.c_str());
             live2DModel->SetExpression(s.c_str());
         }
-        configSaveTimer.start();
-    });
-    
+        configSaveTimer.start(); });
+
     startTimer(1000 / config->getFps());
 }
 
@@ -162,7 +167,7 @@ void Live2DWidget::paintGL()
     live2DModel->Draw();
 }
 
-void Live2DWidget::timerEvent(QTimerEvent* event)
+void Live2DWidget::timerEvent(QTimerEvent *event)
 {
     const QPoint globalPosition = QCursor::pos();
     const float mx = globalPosition.x();
@@ -181,7 +186,7 @@ void Live2DWidget::timerEvent(QTimerEvent* event)
     update(); // 更新画面
 }
 
-void Live2DWidget::mouseMoveEvent(QMouseEvent* event)
+void Live2DWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if (leftButtonPressed)
     {
@@ -212,7 +217,7 @@ void Live2DWidget::mouseMoveEvent(QMouseEvent* event)
     }
 }
 
-void Live2DWidget::mousePressEvent(QMouseEvent* event)
+void Live2DWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -232,7 +237,7 @@ void Live2DWidget::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void Live2DWidget::mouseReleaseEvent(QMouseEvent* event)
+void Live2DWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -317,7 +322,7 @@ void Live2DWidget::processDrag(float mx, float my)
     // 左边缘
     tcx = max((x() + width()) / 2, tcx);
     const float tcy = y() + halfWH;
-    
+
     if (mx <= tcx)
     {
         if (my <= tcy) // 第二象限

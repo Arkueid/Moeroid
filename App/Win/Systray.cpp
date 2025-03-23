@@ -3,7 +3,7 @@
 #include <QApplication>
 #include <QMenu>
 #include <QJsonArray>
-#include <qactiongroup.h>
+#include <QActionGroup>
 
 #include "Process/PythonProcess.h"
 
@@ -99,6 +99,12 @@ void Systray::initialize(MoeConfig* config, QWidget* view)
         history->show();
     });
 
+    QAction* aboutActon = new QAction(tr("关于"), this);
+    menu->addAction(aboutActon);
+    connect(aboutActon, &QAction::triggered, [&](){
+        about.show();
+    });
+
     QAction* quitAction = new QAction(tr("退出"), this);
     menu->addSeparator();
     menu->addAction(quitAction);
@@ -108,8 +114,6 @@ void Systray::initialize(MoeConfig* config, QWidget* view)
     connect(moeConfig, &MoeConfig::currentModelChanged, [&](){
         descAction->setText(moeConfig->getCurrentModelDesc());
     });
-
-
 
     setContextMenu(menu);
 }

@@ -13,6 +13,7 @@ add_executable(${PROJECT_NAME}
     Win/Output.cpp
     Win/Systray.cpp
     Win/HistoryView.cpp
+    Win/About.cpp
 
     Task/LLMTTSWorker.cpp
 

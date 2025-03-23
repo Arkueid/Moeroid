@@ -20,13 +20,13 @@
 <context>
     <name>Live2DWidget</name>
     <message>
-        <location filename="../Win/Live2DWidget.cpp" line="116"/>
+        <location filename="../Win/Live2DWidget.cpp" line="118"/>
         <source>表情</source>
         <translatorcomment>表情</translatorcomment>
         <translation>表情</translation>
     </message>
     <message>
-        <location filename="../Win/Live2DWidget.cpp" line="132"/>
+        <location filename="../Win/Live2DWidget.cpp" line="134"/>
         <source>重置   </source>
         <translatorcomment>リセット   </translatorcomment>
         <translation>リセット   </translation>
@@ -35,7 +35,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../Main.cpp" line="54"/>
+        <location filename="../Main.cpp" line="56"/>
         <source>Moeroid is running. &gt;_&lt;</source>
         <translatorcomment>モエロイドが動いています。＞_＜</translatorcomment>
         <translation>モエロイドが動いています。＞_＜</translation>
@@ -84,6 +84,12 @@
     </message>
     <message>
         <location filename="../Win/Systray.cpp" line="102"/>
+        <source>关于</source>
+        <translatorcomment>情報</translatorcomment>
+        <translation>情報</translation>
+    </message>
+    <message>
+        <location filename="../Win/Systray.cpp" line="108"/>
         <source>退出</source>
         <translatorcomment>終了</translatorcomment>
         <translation>終了</translation>

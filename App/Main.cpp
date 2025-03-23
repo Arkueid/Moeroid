@@ -27,6 +27,8 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    app.setQuitOnLastWindowClosed(false);
+
     QTranslator translator;
     QString locale = QLocale::system().name();
 

@@ -20,13 +20,13 @@
 <context>
     <name>Live2DWidget</name>
     <message>
-        <location filename="../Win/Live2DWidget.cpp" line="116"/>
+        <location filename="../Win/Live2DWidget.cpp" line="118"/>
         <source>表情</source>
         <translatorcomment>表情</translatorcomment>
         <translation>表情</translation>
     </message>
     <message>
-        <location filename="../Win/Live2DWidget.cpp" line="132"/>
+        <location filename="../Win/Live2DWidget.cpp" line="134"/>
         <source>重置   </source>
         <translatorcomment>重置   </translatorcomment>
         <translation>重置   </translation>
@@ -35,7 +35,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../Main.cpp" line="54"/>
+        <location filename="../Main.cpp" line="56"/>
         <source>Moeroid is running. &gt;_&lt;</source>
         <translatorcomment>Moeroid 正在运行 &gt;_&lt;</translatorcomment>
         <translation>Moeroid 正在运行 &gt;_&lt;</translation>
@@ -46,7 +46,8 @@
     <message>
         <location filename="../Win/Systray.cpp" line="31"/>
         <source>置顶模式</source>
-        <translation></translation>
+        <translatorcomment>置顶模式</translatorcomment>
+        <translation>置顶模式</translation>
     </message>
     <message>
         <location filename="../Win/Systray.cpp" line="40"/>
@@ -80,6 +81,11 @@
     </message>
     <message>
         <location filename="../Win/Systray.cpp" line="102"/>
+        <source>关于</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <location filename="../Win/Systray.cpp" line="108"/>
         <source>退出</source>
         <translation></translation>
     </message>

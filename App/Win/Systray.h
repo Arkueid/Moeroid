@@ -3,6 +3,7 @@
 #include <QSystemTrayIcon>
 
 #include "../Config/MoeConfig.h"
+#include "About.h"
 
 class QAction;
 
@@ -14,6 +15,7 @@ class Systray : public QSystemTrayIcon
     QMenu* menu;
     QAction* descAction;
     QWidget* history;
+    About about;
 
 public:
     Systray();
