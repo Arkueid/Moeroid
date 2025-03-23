@@ -29,7 +29,7 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                windowMoved(false),
                                iParamMouthOpenY(-1),
                                cursorEntered(false),
-                               cursorOnL2D(false),
+                               cursorOnL2D(true),
                                config(nullptr)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
@@ -44,9 +44,6 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
 
     configSaveTimer.setSingleShot(true);
     configSaveTimer.setInterval(2000);
-
-    HWND hWnd = reinterpret_cast<HWND>(winId());
-    SetWindowLong(hWnd, GWL_EXSTYLE, GetWindowLongW(hWnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
 }
 
 Live2DWidget::~Live2DWidget()
