@@ -102,7 +102,7 @@ void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
-    // ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
+    ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
     // load model assets
     const std::string& path = config->getCurrentModelJson().toStdString();
     live2DModel->LoadModelJson(path.c_str());
@@ -260,8 +260,7 @@ void Live2DWidget::mouseReleaseEvent(QMouseEvent* event)
             if (framesElapsedRightPress < framesThresholdRightPress)
             {
                 // live2DModel->SetRandomExpression();
-                menu->move(rightClickX, rightClickY);
-                menu->show();
+                menu->exec(event->globalPosition().toPoint());
             }
             else
             {
