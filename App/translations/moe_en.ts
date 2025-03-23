@@ -2,25 +2,11 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
-    <name>HistoryView</name>
-    <message>
-        <location filename="../Win/HistoryView.ui" line="14"/>
-        <source>HistoryView</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>Input</name>
     <message>
-        <location filename="../Win/Input.ui" line="20"/>
         <source>Input</source>
         <translatorcomment>Input</translatorcomment>
-        <translation>Input</translation>
-    </message>
-    <message>
-        <location filename="../Win/Input.ui" line="128"/>
-        <source>Ctrl+Return</source>
-        <translation></translation>
+        <translation type="vanished">Input</translation>
     </message>
 </context>
 <context>
@@ -36,6 +22,15 @@
         <source>重置   </source>
         <translatorcomment>Reset   </translatorcomment>
         <translation>Reset   </translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../Main.cpp" line="54"/>
+        <source>Moeroid is running. &gt;_&lt;</source>
+        <translatorcomment>Moeroid is running. &gt;_&lt;</translatorcomment>
+        <translation>Moeroid is running. &gt;_&lt;</translation>
     </message>
 </context>
 <context>

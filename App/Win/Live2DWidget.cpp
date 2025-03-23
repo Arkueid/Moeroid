@@ -193,13 +193,20 @@ void Live2DWidget::mouseMoveEvent(QMouseEvent* event)
         const int cy = pointF.y();
         const int dx = cx - leftClickX;
         const int dy = cy - leftClickY;
-        if (abs(dx) > 3 && abs(dy) > 3) // 窗口移动阈值
+        if (abs(dx) > 2 && abs(dy) > 2) // 窗口移动阈值
         {
-            move(xWhenClicked + dx, yWhenClicked + dy);
+            live2DModel->Rotate(0);
+
+            if (stickState != STICK_NONE)
+            {
+                move(cx - width() / 2, cy - height() / 2);
+            }
+            else
+            {
+                move(xWhenClicked + dx, yWhenClicked + dy);
+            }
 
             windowMoved = true;
-
-            live2DModel->Rotate(0);
         }
         else
         {
@@ -349,6 +356,7 @@ void Live2DWidget::processStick()
 {
     if (x() + width() / 2 + autoStickMargin >= screenWidth) // 右吸附
     {
+        Info("stick state: right");
         move(screenWidth - width() / 2 - stickOffset, y());
         live2DModel->Rotate(stickRotate);
         stickState = STICK_RIGHT;
@@ -356,6 +364,7 @@ void Live2DWidget::processStick()
     }
     else if (x() + width() / 2 - autoStickMargin <= 0) // 左吸附
     {
+        Info("stick state: left");
         move(-width() / 2 + stickOffset, y());
         live2DModel->Rotate(-stickRotate);
         stickState = STICK_LEFT;
@@ -363,6 +372,7 @@ void Live2DWidget::processStick()
     }
     else
     {
+        Info("stick state: none");
         live2DModel->Rotate(0);
         stickState = STICK_NONE;
         SetStickState(STICK_NONE);
@@ -377,11 +387,11 @@ void Live2DWidget::showInput()
     }
     else if (stickState == STICK_LEFT)
     {
-        input->move(x() + width() / 2, y() - input->height());
+        input->move(0, y() - input->height());
     }
     else if (stickState == STICK_RIGHT)
     {
-        input->move(x() + width() / 2 - input->width(), y() - input->height());
+        input->move(screenWidth - input->width(), y() - input->height());
     }
     input->show();
 }

@@ -15,14 +15,16 @@
 #include "Task/LLMTTSWorker.h"
 
 #include <QTranslator>
-
+#include <QSharedMemory>
+#include <QMessageBox>
 #include <Log.hpp>
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 #ifdef _DEBUG
     SetConsoleOutputCP(65001);
 #endif
+
     QApplication app(argc, argv);
 
     QTranslator translator;
@@ -36,9 +38,23 @@ int main(int argc, char* argv[])
     }
     else
     {
-        if (translator.load(":/i18n/moe_zh_CN")) {
+        if (translator.load(":/i18n/moe_zh_CN"))
+        {
             app.installTranslator(&translator);
         }
+    }
+
+    // ensure single process
+    QSharedMemory singleton("Moeroid");
+    if (!singleton.create(1))
+    {
+#ifdef _DEBUG
+        Info("Another instance of Moeroid is running.");
+#else
+        QMessageBox::information(nullptr, "Moeroid", QObject::tr("Moeroid is running. >_<"));
+#endif
+        app.exit(-1);
+        return -1;
     }
 
     MoeConfig moeConfig;
@@ -54,26 +70,26 @@ int main(int argc, char* argv[])
 
     HistoryView view(moeConfig.getString("dataDir").append("/Audio"));
 
-    Systray* tray = new Systray();
+    Systray *tray = new Systray();
     tray->initialize(&moeConfig, &view);
     tray->show();
-    
-    Live2DWidget* win = new Live2DWidget();
+
+    Live2DWidget *win = new Live2DWidget();
     win->initialize(&moeConfig);
     win->show();
 
     QObject::connect(win->getWorker(), &LLMTTSWorker::textReceived, &view, &HistoryView::onMsgReceived);
     QObject::connect(win->getWorker(), &LLMTTSWorker::textReceiveFinished, &view, &HistoryView::onMsgReceived);
 
-    QObject::connect(&moeConfig, &MoeConfig::currentModelChanged, [&]() {
+    QObject::connect(&moeConfig, &MoeConfig::currentModelChanged, [&]()
+                     {
         delete win;
         CubismHelper::Dispose();  // 清除之前 OpenGL 上下文
 
         CubismHelper::Initialize();
         win = new Live2DWidget();
         win->initialize(&moeConfig);
-        win->show();
-    });
+        win->show(); });
 
     QApplication::exec();
 
@@ -87,4 +103,3 @@ int main(int argc, char* argv[])
     PythonProcess::dispose();
     return 0;
 }
-

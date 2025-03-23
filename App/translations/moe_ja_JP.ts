@@ -4,24 +4,17 @@
 <context>
     <name>HistoryView</name>
     <message>
-        <location filename="../Win/HistoryView.ui" line="14"/>
         <source>HistoryView</source>
         <translatorcomment>チャット履歴ウィンドウ</translatorcomment>
-        <translation>チャット履歴ウィンドウ</translation>
+        <translation type="vanished">チャット履歴ウィンドウ</translation>
     </message>
 </context>
 <context>
     <name>Input</name>
     <message>
-        <location filename="../Win/Input.ui" line="20"/>
         <source>Input</source>
         <translatorcomment>入力ボックス</translatorcomment>
-        <translation>入力ボックス</translation>
-    </message>
-    <message>
-        <location filename="../Win/Input.ui" line="128"/>
-        <source>Ctrl+Return</source>
-        <translation></translation>
+        <translation type="vanished">入力ボックス</translation>
     </message>
 </context>
 <context>
@@ -37,6 +30,15 @@
         <source>重置   </source>
         <translatorcomment>リセット   </translatorcomment>
         <translation>リセット   </translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../Main.cpp" line="54"/>
+        <source>Moeroid is running. &gt;_&lt;</source>
+        <translatorcomment>モエロイドが動いています。＞_＜</translatorcomment>
+        <translation>モエロイドが動いています。＞_＜</translation>
     </message>
 </context>
 <context>

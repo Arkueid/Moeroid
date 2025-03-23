@@ -4,24 +4,17 @@
 <context>
     <name>HistoryView</name>
     <message>
-        <location filename="../Win/HistoryView.ui" line="14"/>
         <source>HistoryView</source>
         <translatorcomment>聊天历史</translatorcomment>
-        <translation>聊天历史</translation>
+        <translation type="vanished">聊天历史</translation>
     </message>
 </context>
 <context>
     <name>Input</name>
     <message>
-        <location filename="../Win/Input.ui" line="20"/>
         <source>Input</source>
         <translatorcomment>输入框</translatorcomment>
-        <translation>输入框</translation>
-    </message>
-    <message>
-        <location filename="../Win/Input.ui" line="128"/>
-        <source>Ctrl+Return</source>
-        <translation></translation>
+        <translation type="vanished">输入框</translation>
     </message>
 </context>
 <context>
@@ -37,6 +30,15 @@
         <source>重置   </source>
         <translatorcomment>重置   </translatorcomment>
         <translation>重置   </translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../Main.cpp" line="54"/>
+        <source>Moeroid is running. &gt;_&lt;</source>
+        <translatorcomment>Moeroid 正在运行 &gt;_&lt;</translatorcomment>
+        <translation>Moeroid 正在运行 &gt;_&lt;</translation>
     </message>
 </context>
 <context>
