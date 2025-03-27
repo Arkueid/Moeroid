@@ -44,7 +44,8 @@ def on_response(text: str):
     t = __text + t
 
     if gen and t != "":
-        t = t.replace("\n", "")
+        t = t.strip().replace("\n", "")
+
         logging.info("start tts: " + t)
         try:
             voice = vits_helper.tts(f"[ZH]{t}[ZH]", array=True)

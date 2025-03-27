@@ -6,6 +6,9 @@ import time
 
 logging.basicConfig(level=logging.DEBUG)
 
+
+url = "http://127.0.0.1:11434/api/chat"
+
 def chat(model_name: str, text: str, history: list[dict] = []) -> str:
     history.append({
                 "role": "user",
@@ -17,7 +20,6 @@ def chat(model_name: str, text: str, history: list[dict] = []) -> str:
         ,
         "stream": False
     }
-    url = "http://127.0.0.1:11434/api/chat"
     start_time = time.time()
     rsp = requests.post(url, json=data).json()
     logging.info(f"llm time cost: {time.time() - start_time}s")
@@ -37,7 +39,6 @@ def chat_stream(model_name: str, text: str, history: list[dict] = [], on_respons
         "messages": history,
         "stream": True
     }
-    url = "http://127.0.0.1:11434/api/chat"
     start_time = time.time()
     rsp = requests.post(url, json=data)
     
