@@ -8,7 +8,12 @@
 		"Physics": "momo.physics3.json",
 		"DisplayInfo": "momo.cdi3.json",
 		"Motions": {
-			"Idle": [
+			"drag_down": [
+				{
+					"File": "../public_motions/drag_down.motion3.json"
+				}
+			],
+			"tap": [
 				{
 					"File": "motions/idle.motion3.json"
 				}

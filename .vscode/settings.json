@@ -20,6 +20,7 @@
         "qwidget": "cpp",
         "qmetaobject": "cpp",
         "qobject": "cpp",
-        "qlistwidgetitem": "cpp"
+        "qlistwidgetitem": "cpp",
+        "qpropertyanimation": "cpp"
     }
 }

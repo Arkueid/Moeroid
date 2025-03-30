@@ -46,6 +46,16 @@ class Live2DWidget : public QOpenGLWidget
     int screenHeight;
 
     QTimer configSaveTimer;
+    
+    // dragging 动画
+    const float dragDeltaY;
+    float defaultOffsetY;
+    float offsetX;
+    float offsetY;
+    float offsetYStep;
+    bool playing;
+    float framesThresholdOffsetY;
+    float framesElapsedOffsetY;
 
     MoeConfig* config;
 

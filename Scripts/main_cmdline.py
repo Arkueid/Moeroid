@@ -59,9 +59,9 @@ def on_response(text: str):
     else:  # 保存供下一次生成
         __text = t
 
-
+import llm_doubao
 model = "neko:a1"
 history = []
 while True:
     x = input(">>>")
-    llm.chat_stream(model, x, history, on_response)
+    llm_doubao.chat_stream(x, history, on_response)

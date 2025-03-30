@@ -31,7 +31,11 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                iParamMouthOpenY(-1),
                                cursorEntered(false),
                                cursorOnL2D(true),
-                               config(nullptr)
+                               config(nullptr),
+                               playing(false),
+                               framesElapsedOffsetY(0),
+                               framesThresholdOffsetY(0),
+                               dragDeltaY(0.08)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -85,10 +89,14 @@ void Live2DWidget::initialize(MoeConfig *config)
     resize(config->getCurrentPreferenceInt("windowWidth"), config->getCurrentPreferenceInt("windowHeight"));
     stickRotate = config->getCurrentPreferenceFloat("stickRotate");
     stickOffset = config->getCurrentPreferenceInt("stickOffset");
-    live2DModel->SetOffset(config->getCurrentPreferenceFloat("offsetX"),
-                           config->getCurrentPreferenceFloat("offsetY"));
+    offsetX = config->getCurrentPreferenceFloat("offsetX");
+    defaultOffsetY = config->getCurrentPreferenceFloat("offsetY");
+    offsetY = defaultOffsetY;
+    live2DModel->SetOffset(offsetX, offsetY);
     live2DModel->SetScale(config->getCurrentPreferenceFloat("scale"));
-    processStick();
+
+    framesThresholdOffsetY = config->getFps();
+    offsetYStep = dragDeltaY / framesThresholdOffsetY;
 
     connect(&configSaveTimer, &QTimer::timeout, this, &Live2DWidget::saveConfig);
 }
@@ -147,6 +155,8 @@ void Live2DWidget::initializeGL()
         }
         configSaveTimer.start(); });
 
+    processStick();
+
     startTimer(1000 / config->getFps());
 }
 
@@ -183,6 +193,24 @@ void Live2DWidget::timerEvent(QTimerEvent *event)
         framesElapsedRightPress += 1;
     }
 
+    if (playing)
+    {
+        if (framesElapsedOffsetY == 0.0f)
+        {
+            live2DModel->StartRandomMotion("drag_down", 3);
+        }
+        framesElapsedOffsetY += 1;
+        offsetY -= offsetYStep;
+        if (framesElapsedOffsetY > framesThresholdOffsetY)
+        {
+            framesElapsedOffsetY = 0;
+            offsetY = defaultOffsetY;
+            playing = false;
+        }
+        live2DModel->SetOffset(offsetX, offsetY);
+    }
+
+
     update(); // 更新画面
 }
 
@@ -206,6 +234,12 @@ void Live2DWidget::mouseMoveEvent(QMouseEvent *event)
             else
             {
                 move(xWhenClicked + dx, yWhenClicked + dy);
+            }
+
+            if (!windowMoved)
+            {
+                offsetY = defaultOffsetY + dragDeltaY;
+                live2DModel->SetOffset(offsetX, offsetY);
             }
 
             windowMoved = true;
@@ -248,11 +282,13 @@ void Live2DWidget::mouseReleaseEvent(QMouseEvent *event)
             configSaveTimer.start();
 
             processStick();
+            playing = true;
         }
         else // 窗口未移动，则响应鼠标点击事件
         {
             live2DModel->StartRandomMotion(nullptr, 3);
         }
+
     }
     else if (event->button() == Qt::RightButton)
     {

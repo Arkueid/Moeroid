@@ -152,6 +152,7 @@ def processChat():
         text = f"请用{lan[2]}回复：{text}"
         llm.chat_stream(model, text, history, on_response)
     except Exception as e:
+        logging.error(e)
         on_response("抱歉，大模型宕机了...")
         on_response("")
 
