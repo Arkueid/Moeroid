@@ -323,10 +323,11 @@ void Live2DWidget::processTransparentForMouse(const int mouseLocalX, const int m
     }
 
     // 系统屏幕缩放比例，会影响鼠标所在位置对应像素透明度的判断
-    const int systemScaling = devicePixelRatio();
+    const double systemScaling = devicePixelRatio();
+
     unsigned char alpha;
     // 读取鼠标所在位置的像素值
-    glReadPixels(mouseLocalX * systemScaling, (height() - mouseLocalY) * systemScaling, 1, 1, GL_ALPHA,
+    glReadPixels(static_cast<int>(mouseLocalX * systemScaling), static_cast<int>((height() - mouseLocalY) * systemScaling), 1, 1, GL_ALPHA,
                  GL_UNSIGNED_BYTE,
                  &alpha);
 
