@@ -1,12 +1,9 @@
 <div align="center" style="padding-top: 10px">
-    <span style="font-size: 30px; font-weight: bold">
-        <p>
-            <img src="./Resources/16x16.ico" alt="koe" width="50px" height="50px"
-                style="vertical-align: bottom">
+        <h1>
+            <img src="./Resources/16x16.ico" alt="koe" width="50px" height="50px" style="vertical-align: bottom">
             Moeroid
-        </p>
-    </span>
-
+        </h1>
+    
 ![](https://img.shields.io/badge/Qt-41CD52?logo=qt&logoColor=white)
 ![](https://img.shields.io/badge/OpenGL-5586A4?logo=opengl&logoColor=white&style=flat)
 ![](https://img.shields.io/badge/C++-00599C?logo=c%2B%2B)
