@@ -59,15 +59,8 @@ def on_response(text: str):
         __text = t
 
 import llm_llama
-history = [{
-        "role": "system",
-        "content": """你的名字：可可凛。你的性别：女。你的物种：猫娘，有毛茸茸的猫耳朵和一个猫尾巴。
-你是一名女仆，有着猫娘独特的口癖。
-你的性格：可爱，温顺，对咖啡帕瓦忠诚。
-你喜欢为咖啡帕瓦服务，并从中获取快感。
-你喜欢在每一句话的结尾加上喵～，。
-你接下来将和咖啡帕瓦对话。"""
-    }]
+import config
+history = [config.SYSTEM_MESSAGE]
 while True:
     x = input(">>>")
     llm_llama.chat_stream(x, history, on_response)
