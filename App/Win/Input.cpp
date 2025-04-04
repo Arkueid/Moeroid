@@ -121,3 +121,10 @@ const LLMTTSWorker *Input::getWorker() const
 {
     return worker;
 }
+
+void Input::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    ui.editor->activateWindow();
+    ui.editor->setFocus();
+}

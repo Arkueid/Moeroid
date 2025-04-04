@@ -106,13 +106,13 @@ const LLMTTSWorker *Live2DWidget::getWorker() const
     return input->getWorker();
 }
 
-// typedef bool(__stdcall *SwapInterval)(int);
+typedef bool(__stdcall *SwapInterval)(int);
 
 void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
-    // ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
+    ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
     // load model assets
     const std::string &path = config->getCurrentModelJson().toStdString();
     live2DModel->LoadModelJson(path.c_str());
@@ -211,7 +211,6 @@ void Live2DWidget::timerEvent(QTimerEvent *event)
         live2DModel->SetOffset(offsetX, offsetY);
     }
 
-
     update(); // 更新画面
 }
 
@@ -289,7 +288,6 @@ void Live2DWidget::mouseReleaseEvent(QMouseEvent *event)
         {
             live2DModel->StartRandomMotion(nullptr, 3);
         }
-
     }
     else if (event->button() == Qt::RightButton)
     {

@@ -15,6 +15,44 @@
 			],
 			"tap": [
 				{
+					"File": "motions/haru_g_m08.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m10.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m12.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m15.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m16.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m18.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m19.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m20.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m21.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m22.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m24.motion3.json"
+				},
+				{
+					"File": "motions/haru_g_m26.motion3.json"
+				}
+			],
+			"idle": [
+				{
 					"File": "motions/idle.motion3.json"
 				}
 			]
