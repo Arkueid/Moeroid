@@ -162,6 +162,7 @@ void Live2DWidget::initializeGL()
 
 void Live2DWidget::resizeGL(int w, int h)
 {
+    glViewport(0, 0, w, h);
     live2DModel->Resize(w, h);
 }
 

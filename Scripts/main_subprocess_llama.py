@@ -1,3 +1,4 @@
+import uuid
 import sys
 import os
 cd = os.path.split(__file__)[0]
@@ -8,7 +9,6 @@ import logging
 import struct
 import config
 import time
-import uuid
 import sqlite3
 
 data_dir = os.path.join(cd, "..", "Data")
@@ -39,7 +39,6 @@ LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 logging.basicConfig(filename=log_file, level=logging.INFO, format=LOG_FORMAT, encoding="utf-8")
 
 import vits_helper
-import llm
 import sys
 import sounddevice
 import time
@@ -60,12 +59,9 @@ else:
     logging.warning(f"invalid lan_val: {lan}")
 logging.info(f"current lan: {lan}")
 
-# model = "neko:qwen2.5-0.5b"
-# model = "neko:gemma3-1b"
-# model = "neko:qwen2.5-1.5b"
-model = "neko:a1"
-
-history = []
+history = [
+    config.SYSTEM_MESSAGE
+]
 
 __text = ""
 
@@ -97,8 +93,8 @@ def on_response(text: str):
 
     t = __text + t
 
+    t = t.strip().replace("\n", "")
     if gen and t != "":
-        t = t.replace("\n", "")
         logging.info("start tts: " + t)
         try:
             # -- tts start--
@@ -139,6 +135,7 @@ def on_response(text: str):
     else:  # 保存供下一次生成
         __text = t
 
+import llm_doubao
 
 def processChat():
     length_bytes = sys.stdin.buffer.read(8)
@@ -149,8 +146,8 @@ def processChat():
     chat_db.execute(f"insert into `{table}` values('{text}', 'user', '', '{ct}')")
 
     try:
-        text = f"请用{lan[2]}回复：{text}"
-        llm.chat_stream(model, text, history, on_response)
+        text = f"请用{lan[2]}回答问题：{text}"
+        llm_doubao.chat_stream(text, history, on_response)
     except Exception as e:
         logging.error(e)
         on_response("抱歉，大模型宕机了...")
