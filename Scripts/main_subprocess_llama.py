@@ -146,7 +146,7 @@ def processChat():
     chat_db.execute(f"insert into `{table}` values('{text}', 'user', '', '{ct}')")
 
     try:
-        text = f"请用{lan[2]}回答问题：{text}"
+        text = f"请用{lan[2]}回复：{text}"
         llm_doubao.chat_stream(text, history, on_response)
     except Exception as e:
         logging.error(e)
