@@ -14,7 +14,6 @@ class Systray : public QSystemTrayIcon
     MoeConfig* moeConfig;
     QMenu* menu;
     QAction* descAction;
-    QWidget* history;
     About about;
 
 public:

@@ -20,7 +20,6 @@ Systray::~Systray()
 void Systray::initialize(MoeConfig* config, QWidget* view)
 {
     moeConfig = config;
-    history = view;
 
     setIcon(QIcon(config->getString("modelDir").append("/16x16.ico")));
     setToolTip("Moeroid");
@@ -95,8 +94,8 @@ void Systray::initialize(MoeConfig* config, QWidget* view)
 
     QAction* historyAction = new QAction(tr("聊天记录"), this);
     menu->addAction(historyAction);
-    connect(historyAction, &QAction::triggered, [&](){
-        history->show();
+    connect(historyAction, &QAction::triggered, [=](){
+        view->show();
     });
 
     QAction* aboutActon = new QAction(tr("关于"), this);
