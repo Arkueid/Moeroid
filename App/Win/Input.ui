@@ -20,54 +20,11 @@
    <string>Input</string>
   </property>
   <property name="autoFillBackground">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
-  <property name="styleSheet">
-   <string notr="true">/* 设置整体背景颜色 */
-QWidget {
-    background-color: #FFD9E8; /* 粉色背景 */
-}
-
-/* QLineEdit 样式 */
-QLineEdit {
-    border: 2px solid #F4A6B7; /* 边框颜色 */
-    border-radius: 10px; /* 圆角边框 */
-    padding: 5px; /* 内边距 */
-    background-color: #FFF3F8; /* 输入框背景颜色 */
-    color: #8C2C60; /* 文字颜色 */
-}
-
-/* 当输入框被选中时的样式 */
-QLineEdit:focus {
-    border-color: #FF6CC9; /* 更鲜艳的颜色突出显示 */
-    background-color: #FFECF3;
-}
-
-/* QPushButton 基础样式 */
-QPushButton {
-    border: 2px solid #F4A6B7; /* 边框颜色 */
-    border-radius: 10px; /* 圆角边框 */
-    padding: 5px 15px; /* 内边距 */
-    background-color: #FFBBD7; /* 按钮背景颜色 */
-    color: #FFFFFF; /* 文字颜色 */
-    font-weight: bold; /* 加粗字体 */
-}
-
-/* 当鼠标悬停在按钮上时 */
-QPushButton:hover {
-    background-color: #FF6CC9; /* 改变背景颜色 */
-}
-
-/* 当按钮被按下时 */
-QPushButton:pressed {
-    background-color: #D957A3; /* 更深的颜色表示按下状态 */
-}
-
-/* 添加图标或其他装饰元素（如果需要）可以在这里进行调整 */</string>
-  </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,16,4,4,1">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,16,3,3,1">
    <property name="spacing">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="leftMargin">
     <number>4</number>
@@ -113,10 +70,13 @@ QPushButton:pressed {
    <item>
     <widget class="QPushButton" name="sendBtn">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
      </property>
      <property name="text">
       <string/>
@@ -128,14 +88,14 @@ QPushButton:pressed {
       <string>Ctrl+Return</string>
      </property>
      <property name="flat">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="closeBtn">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -145,9 +105,6 @@ QPushButton:pressed {
      </property>
      <property name="icon">
       <iconset theme="QIcon::ThemeIcon::WindowClose"/>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
      </property>
     </widget>
    </item>

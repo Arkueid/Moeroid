@@ -1,4 +1,14 @@
-# Moeroid
+<div align="center" style="padding-top: 10px">
+    <h1>
+        <img src="./Resources/16x16.ico" alt="koe" width="30px" height="30px">
+        Moeroid
+    </h1>
+</div>
+
+![](https://img.shields.io/badge/Qt-41CD52?logo=qt&logoColor=white)
+![](https://img.shields.io/badge/OpenGL-5586A4?logo=opengl&logoColor=white&style=flat)
+![](https://img.shields.io/badge/C++-00599C?logo=c%2B%2B)
+![](https://img.shields.io/badge/CMake-064F8C?logo=cmake)
 
 低配 AI 桌宠，全 cpu 推理。
 

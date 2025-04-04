@@ -8,7 +8,7 @@
 
 #include "Output.h"
 
-Input::Input() : backgroundColor("#FFD9E8"), shadowColor(0, 0, 0, 64), shadowWidth(2)
+Input::Input() : backgroundColor(30, 30, 30, 225), shadowWidth(1)
 {
     ui.setupUi(this);
 
@@ -44,9 +44,6 @@ void Input::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-
-    painter.setBrush(shadowColor);
-    painter.drawRoundedRect(0, 0, width(), height(), 10, 10);
 
     painter.setBrush(backgroundColor);
     painter.drawRoundedRect(shadowWidth, shadowWidth, width() - shadowWidth * 2, height() - shadowWidth * 2, 8, 8);

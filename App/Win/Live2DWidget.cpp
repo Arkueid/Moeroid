@@ -37,6 +37,9 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                framesThresholdOffsetY(0),
                                dragDeltaY(0.08)
 {
+
+    setWindowTitle("❤Moe Moe Kyun~❤");
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     setAttribute(Qt::WA_TranslucentBackground);
 
@@ -124,6 +127,7 @@ void Live2DWidget::initializeGL()
 
     menu = new QMenu(this);
     QMenu *expMenu = menu->addMenu(tr("表情"));
+    expMenu->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::SyncSynchronizing));
     QActionGroup *group = new QActionGroup(expMenu);
     group->setExclusive(true);
     void *x[3] = {expMenu, group, &curExp};
