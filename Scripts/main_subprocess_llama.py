@@ -135,7 +135,7 @@ def on_response(text: str):
     else:  # 保存供下一次生成
         __text = t
 
-import llm_doubao
+import llm_llama
 
 def processChat():
     length_bytes = sys.stdin.buffer.read(8)
