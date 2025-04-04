@@ -147,7 +147,7 @@ def processChat():
 
     try:
         text = f"请用{lan[2]}回复：{text}"
-        llm_doubao.chat_stream(text, history, on_response)
+        llm_llama.chat_stream(text, history, on_response)
     except Exception as e:
         logging.error(e)
         on_response("抱歉，大模型宕机了...")
