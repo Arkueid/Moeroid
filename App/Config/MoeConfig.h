@@ -58,7 +58,7 @@ public:
 
     QStringList getActiveExpressions();
 
-    void setActiveExpressions(const QStringList&);
+    void setActiveExpressions(const QString& name, const QStringList& list);
 
     QJsonObject getColorSchemes();
 

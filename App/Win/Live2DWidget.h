@@ -56,6 +56,8 @@ class Live2DWidget : public QOpenGLWidget
 
     QStringList activeExpressions;
 
+    QString modelName;
+
 public:
     Live2DWidget();
     ~Live2DWidget() override;

@@ -92,6 +92,8 @@ void Live2DWidget::initialize(MoeConfig *config)
     live2DModel->SetOffset(config->getCurrentPreferenceFloat("offsetX"), config->getCurrentPreferenceFloat("offsetY"));
     live2DModel->SetScale(config->getCurrentPreferenceFloat("scale"));
 
+    modelName = config->getCurrentName();
+
     connect(&configSaveTimer, &QTimer::timeout, this, &Live2DWidget::saveConfig);
 }
 
@@ -121,7 +123,7 @@ void Live2DWidget::initializeGL()
     const QJsonObject expColorSchemes = config->getColorSchemes();
     for (const QString &exp : activeExpressions)
     {
-        live2DModel->SetExpression(exp.toStdString().c_str());
+        live2DModel->AddExpression(exp.toStdString().c_str());
         if (!expColorSchemes.isEmpty())
         {
             const QJsonArray expColorScheme = expColorSchemes[exp].toArray();
@@ -499,7 +501,7 @@ void Live2DWidget::onExpMenuTriggered(QAction *action)
     }
     else if (!action->isChecked())
     {
-        live2DModel->ResetExpression(expId.c_str());
+        live2DModel->RemoveExpression(expId.c_str());
         activeExpressions.removeAll(expId.c_str());
         // qDebug() << "reset expression";
 
@@ -517,7 +519,7 @@ void Live2DWidget::onExpMenuTriggered(QAction *action)
     }
     else
     {
-        live2DModel->SetExpression(expId.c_str());
+        live2DModel->AddExpression(expId.c_str());
         activeExpressions.append(expId.c_str());
 
         const QJsonObject expColorSchemes = config->getColorSchemes();
@@ -543,7 +545,7 @@ void Live2DWidget::saveConfig() const
 {
     config->setInt("windowX", x());
     config->setInt("windowY", y());
-    config->setActiveExpressions(activeExpressions);
+    config->setActiveExpressions(modelName, activeExpressions);
     config->writeFile();
     Info("config saved.");
 }

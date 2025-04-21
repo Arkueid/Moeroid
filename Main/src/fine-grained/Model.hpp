@@ -9,13 +9,13 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #include <Model/CubismUserModel.hpp>
 #include <Motion/ACubismMotion.hpp>
 
 #include <LAppTextureManager.hpp>
 #include <MatrixManager.hpp>
-#include <unordered_map>
 
 using namespace Csm;
 
@@ -150,14 +150,21 @@ public:
     const unsigned short* GetDrawableIndices(int index);
 
     // expression
+    void AddExpression(const char *expressionId);
+
+    void RemoveExpression(const char *expressionId);
+
     void SetExpression(const char *expressionId);
 
-    int GetExpressionCount();
-    void GetExpressions(void *collector, void(*collect)(void* collector, const char* id, const char* file));
+    const char* SetRandomExpression();
 
     void ResetExpressions();
 
-    void ResetExpression(const char* expressionId);
+    void ResetExpression();
+
+    int GetExpressionCount();
+
+    void GetExpressions(void *collector, void(*collect)(void* collector, const char* id, const char* file));
 
     // reset
     void StopAllMotions();
@@ -166,9 +173,17 @@ public:
 
     void ResetPose();
 
+    // sizes
+    void GetCanvasSize(float& w, float& h);
+
+    void GetCanvasSizePixel(float& w, float& h);
+
+    float GetPixelsPerUnit();
+
 private:
     void ReleaseMotions();
     void ReleaseExpressions();
+    void ReleaseExpressionManagers();
     void SetupTextures();
     void PreloadMotionGroup(const csmChar* group);
     void SetupModel();
@@ -182,6 +197,7 @@ private:
     csmMap<Csm::csmString, ACubismMotion*> _motions;
     csmMap<Csm::csmString, ACubismMotion*> _expressions;
     std::unordered_map<std::string, CubismExpressionMotionManager*> _expManagers;
+    
 
     const Csm::CubismId* _idParamAngleX;
     const Csm::CubismId* _idParamAngleY;
@@ -211,7 +227,4 @@ private:
 
     std::vector<csmString> _motionGroupNames;
     std::vector<int> _motionCounts;
-
-    std::string _defaultExpressionId;
-    double _expFadeOutTimeMillis;
 };

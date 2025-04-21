@@ -55,7 +55,7 @@ namespace
 
 Model::Model() : CubismUserModel(), _modelSetting(nullptr), _matrixManager(),
                  _parameterCount(0), _parameterDefaultValues(nullptr), _parameterValues(nullptr),
-                 _tmpOrderedDrawIndice(nullptr), _expFadeOutTimeMillis(0), _defaultExpressionId("")
+                 _tmpOrderedDrawIndice(nullptr)
 {
     _mocConsistency = true;
 
@@ -73,6 +73,7 @@ Model::~Model()
 
     ReleaseMotions();
     ReleaseExpressions();
+    ReleaseExpressionManagers();
 
     if (_modelSetting == nullptr)
     {
@@ -110,7 +111,7 @@ void Model::Update(float deltaSecs)
     _model->LoadParameters();
     if (!_motionManager->IsFinished())
     {
-        motionUpdated = _motionManager->UpdateMotion(_model, deltaSecs); 
+        motionUpdated = _motionManager->UpdateMotion(_model, deltaSecs);
     }
     _model->SaveParameters();
 
@@ -124,9 +125,9 @@ void Model::Update(float deltaSecs)
         }
     }
 
-    for (auto& mgr: _expManagers)
+    if (_expressionManager != NULL)
     {
-
+        _expressionManager->UpdateMotion(_model, deltaSecs);
     }
 
     _model->AddParameterValue(_ParamAngleXi, _dragX * 30);
@@ -191,7 +192,7 @@ void Model::SetupModel()
                            ACubismMotion *motion = LoadExpression(buffer, size, name.GetRawString());
                            if (motion)
                            {
-                                const char* key = name.GetRawString();
+                               std::string key = name.GetRawString();
                                if (_expressions[name] != nullptr)
                                {
                                    ACubismMotion::Delete(_expressions[name]);
@@ -199,8 +200,8 @@ void Model::SetupModel()
                                }
                                if (_expManagers[key] != nullptr)
                                {
-                                    CSM_DELETE(_expManagers[key]);
-                                    _expManagers[key] = nullptr;
+                                   CSM_DELETE(_expManagers[key]);
+                                   _expManagers.erase(key);
                                }
                                _expressions[name] = motion;
                                _expManagers[key] = CSM_NEW CubismExpressionMotionManager();
@@ -333,8 +334,8 @@ bool Model::IsHit(CubismIdHandle drawableId, csmFloat32 pointX, csmFloat32 point
         return false; // 存在しない場合はfalse
     }
 
-    const csmInt32    count = _model->GetDrawableVertexCount(drawIndex);
-    const csmFloat32* vertices = _model->GetDrawableVertices(drawIndex);
+    const csmInt32 count = _model->GetDrawableVertexCount(drawIndex);
+    const csmFloat32 *vertices = _model->GetDrawableVertices(drawIndex);
 
     csmFloat32 left = vertices[0];
     csmFloat32 right = vertices[0];
@@ -412,9 +413,16 @@ void Model::UpdateBlink(float deltaSecs)
 
 void Model::UpdateExpression(float deltaSecs)
 {
-    for (auto& mgr: _expManagers)
+    if (_expressionManager->IsFinished())
     {
-        mgr.second->UpdateMotion(_model, deltaSecs);
+        for (auto &pair : _expManagers)
+        {
+            pair.second->UpdateMotion(_model, deltaSecs);
+        }
+    }
+    else 
+    {
+        _expressionManager->UpdateMotion(_model, deltaSecs);
     }
 }
 
@@ -656,7 +664,6 @@ void Model::StartRandomMotion(const char *group, int priority, void *startCallee
 
     csmInt32 no = rand() % _motionCounts[gindex];
 
-    // Debug("start motion(%s, %d)", g.GetRawString(), no);
     StartMotion(g.GetRawString(), no, priority, startCallee, startCalleeHandler, finishCallee,
                 finishCalleeHandler);
 }
@@ -722,7 +729,7 @@ int Model::GetMotionCount(const char *group)
     return _modelSetting->GetMotionCount(group);
 }
 
-void Model::GetMotions(void *collector, void (*collect)(void *collector, const char *group, int no, const char *file, const char* sound))
+void Model::GetMotions(void *collector, void (*collect)(void *collector, const char *group, int no, const char *file, const char *sound))
 {
     const int count = _modelSetting->GetMotionGroupCount();
     for (int i = 0; i < count; i++)
@@ -1099,7 +1106,7 @@ const unsigned short *Model::GetDrawableIndices(int index)
     return _model->GetDrawableVertexIndices(index);
 }
 
-void Model::SetExpression(const char *expressionId)
+void Model::AddExpression(const char *expressionId)
 {
     ACubismMotion *motion = _expressions[expressionId];
 
@@ -1113,6 +1120,72 @@ void Model::SetExpression(const char *expressionId)
     {
         Info("expression[%s] is null ", expressionId);
     }
+}
+
+void Model::RemoveExpression(const char *expressionId)
+{
+    if (_expManagers.find(expressionId) == _expManagers.end())
+    {
+        return;
+    }
+    _expManagers[expressionId]->StopAllMotions();
+
+    Info("reset expression: [%s]", expressionId);
+}
+
+void Model::SetExpression(const char *expressionId)
+{
+    ACubismMotion *motion = _expressions[expressionId];
+
+    Info("expression: [%s]", expressionId);
+
+    if (motion != nullptr)
+    {
+        _expressionManager->StartMotion(motion, false);
+    }
+    else
+    {
+        Info("expression[%s] is null ", expressionId);
+    }
+}
+
+const char* Model::SetRandomExpression()
+{
+    const int size = _expressions.GetSize();
+    if (size == 0)
+    {
+        return nullptr;
+    }
+    csmInt32 no = rand() % size;
+    csmMap<csmString, ACubismMotion *>::const_iterator map_ite;
+    csmInt32 i = 0;
+    for (map_ite = _expressions.Begin(); map_ite != _expressions.End(); map_ite++)
+    {
+        if (i == no)
+        {
+            csmString name = (*map_ite).First;
+            SetExpression(name.GetRawString());
+            return name.GetRawString();
+        }
+        i++;
+    }
+    return nullptr;
+}
+
+void Model::ResetExpressions()
+{
+    for (auto& [id, expMgr] : _expManagers)
+    {
+        expMgr->StopAllMotions();
+    }
+    _expressionManager->StopAllMotions();
+
+    Info("reset expressions");
+}
+
+void Model::ResetExpression()
+{
+   _expressionManager->StopAllMotions();
 }
 
 int Model::GetExpressionCount()
@@ -1129,19 +1202,6 @@ void Model::GetExpressions(void *collector, void (*collect)(void *collector, con
         const char *id = _modelSetting->GetExpressionName(i);
         collect(collector, id, file);
     }
-}
-
-void Model::ResetExpressions()
-{
-    for (auto& pair : _expManagers)
-    {
-        pair.second->StopAllMotions();
-    }
-}
-
-void Model::ResetExpression(const char *expressionId)
-{
-    _expManagers[expressionId]->StopAllMotions();
 }
 
 void Model::StopAllMotions()
@@ -1166,6 +1226,23 @@ void Model::ResetPose()
     }
 }
 
+void Model::GetCanvasSize(float &w, float &h)
+{
+    w = _model->GetCanvasWidth();
+    h = _model->GetCanvasHeight();
+}
+
+void Model::GetCanvasSizePixel(float &w, float &h)
+{
+    w = _model->GetCanvasWidthPixel();
+    h = _model->GetCanvasHeightPixel();
+}
+
+float Model::GetPixelsPerUnit()
+{
+    return _model->GetPixelsPerUnit();
+}
+
 void Model::ReleaseMotions()
 {
     for (csmMap<csmString, ACubismMotion *>::const_iterator iter = _motions.Begin(); iter != _motions.End(); ++iter)
@@ -1184,6 +1261,15 @@ void Model::ReleaseExpressions()
     }
 
     _expressions.Clear();
+}
+
+void Model::ReleaseExpressionManagers()
+{
+    for (auto& [id, expMgr] : _expManagers)
+    {
+        delete expMgr;
+    }
+    _expManagers.clear();
 }
 
 void Model::SetupTextures()

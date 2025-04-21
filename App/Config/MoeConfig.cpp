@@ -242,9 +242,8 @@ QStringList MoeConfig::getActiveExpressions()
     return preferences["activeExpressions"].toVariant().toStringList();
 }
 
-void MoeConfig::setActiveExpressions(const QStringList &list)
+void MoeConfig::setActiveExpressions(const QString& name, const QStringList &list)
 {
-    const QString& name = moeJson["current"].toObject()["name"].toString();
     QJsonObject models = moeJson["models"].toObject();
     QJsonObject model = models[name].toObject();
     QJsonObject preferences = model["preferences"].toObject();
