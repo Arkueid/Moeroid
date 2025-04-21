@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <Log.hpp>
 #include <Moe/Moe.hpp>
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
@@ -27,6 +28,13 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication app(argc, argv);
+
+
+    QDir dir("../../Data/");
+    if (!dir.exists())
+    {
+        dir.mkpath(".");
+    }
 
     Moe::load("../../Data/moe.dat");
 
