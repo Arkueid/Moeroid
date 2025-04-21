@@ -20,15 +20,17 @@ Systray::~Systray()
 void Systray::initialize(MoeConfig* config, QWidget* view)
 {
     moeConfig = config;
-    history = view;
 
-    setIcon(QIcon(config->getString("modelDir").append("/16x16.ico")));
+    QIcon icon(config->getString("modelDir").append("/16x16.ico"));
+    setIcon(icon);
     setToolTip("Moeroid");
 
     menu = new QMenu();
     descAction = menu->addAction(config->getCurrentModelDesc());
-    descAction->setEnabled(false);
+    descAction->setIcon(icon);
+    menu->addSeparator();
     QAction* stayOnTopAction = new QAction(tr("置顶模式"), this);
+    stayOnTopAction->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::WindowNew));
     stayOnTopAction->setCheckable(true);
     stayOnTopAction->setChecked(moeConfig->getBoolean("stayOnTop"));
     connect(stayOnTopAction, &QAction::triggered, moeConfig, &MoeConfig::setStayOnTop);
@@ -38,6 +40,7 @@ void Systray::initialize(MoeConfig* config, QWidget* view)
     const QString& clan = config->getLan();
 
     QMenu* lanMenu = menu->addMenu(tr("语音"));
+    lanMenu->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::AudioInputMicrophone));
     QActionGroup* group = new QActionGroup(this);
     group->setExclusive(true);
     
@@ -66,6 +69,7 @@ void Systray::initialize(MoeConfig* config, QWidget* view)
 
 
     QMenu* modelMenu = menu->addMenu(tr("模型"));
+    modelMenu->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::SyncSynchronizing));
     QActionGroup* skinGroup = new QActionGroup(this);
     skinGroup->setExclusive(true);
     const QString& currentName = config->getCurrentName();
@@ -94,18 +98,21 @@ void Systray::initialize(MoeConfig* config, QWidget* view)
     }
 
     QAction* historyAction = new QAction(tr("聊天记录"), this);
+    historyAction->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentOpenRecent));
     menu->addAction(historyAction);
-    connect(historyAction, &QAction::triggered, [&](){
-        history->show();
+    connect(historyAction, &QAction::triggered, [=](){
+        view->show();
     });
 
     QAction* aboutActon = new QAction(tr("关于"), this);
+    aboutActon->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::HelpAbout));
     menu->addAction(aboutActon);
     connect(aboutActon, &QAction::triggered, [&](){
         about.show();
     });
 
     QAction* quitAction = new QAction(tr("退出"), this);
+    quitAction->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::SystemShutdown));
     menu->addSeparator();
     menu->addAction(quitAction);
 

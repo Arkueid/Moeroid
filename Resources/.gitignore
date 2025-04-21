@@ -2,3 +2,5 @@
 !.gitignore
 !猫耳幻丝
 !16x16.ico
+!public_motions
+!test_model.py

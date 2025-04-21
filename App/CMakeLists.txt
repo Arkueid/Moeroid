@@ -30,6 +30,9 @@ add_executable(${PROJECT_NAME}
     Sqlite/sqlite3.c
     Sqlite/SQLite.cpp
 
+    Moe/Moe.hpp
+    Moe/Moe.cpp
+
     logo.rc
 )
 
@@ -85,9 +88,9 @@ add_custom_command(
 )
 
 set(ts_files
-    ${CMAKE_CURRENT_SOURCE_DIR}/translations/moe_zh_CN.ts
-    ${CMAKE_CURRENT_SOURCE_DIR}/translations/moe_en.ts
-    ${CMAKE_CURRENT_SOURCE_DIR}/translations/moe_ja_JP.ts
+    ${CMAKE_CURRENT_SOURCE_DIR}/Translations/moe_zh_CN.ts
+    ${CMAKE_CURRENT_SOURCE_DIR}/Translations/moe_en.ts
+    ${CMAKE_CURRENT_SOURCE_DIR}/Translations/moe_ja_JP.ts
 )
 
 qt6_add_translations(${PROJECT_NAME} TS_FILES ${ts_files})

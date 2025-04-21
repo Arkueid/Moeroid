@@ -204,6 +204,14 @@ public:
 
     void GetMotionGroups(void* collector, void(*callback)(void* collector, const char* groupName, int count));
 
+    const char* GetSoundPath(const char* group, int index);
+
+    void GetCanvasSize(float& w, float& h);
+
+    void GetCanvasSizePixel(float& w, float& h);
+
+    float GetPixelsPerUnit();
+
 protected:
     /**
      *  @brief  モデルを描画する処理。モデルを描画する空間のView-Projection行列を渡す。
@@ -248,6 +256,8 @@ private:
      * すべての表情データを解放する。
      */
     void ReleaseExpressions();
+
+    bool IsHit(Csm::CubismIdHandle drawableId, float pointX, float pointY) override;
 
     Csm::ICubismModelSetting* _modelSetting; ///< モデルセッティング情報
     Csm::csmString _modelHomeDir; ///< モデルセッティングが置かれたディレクトリ

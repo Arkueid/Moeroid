@@ -45,6 +45,9 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     object["dataDir"] = "../../Data";
 
     QJsonObject moefans, preferences, skin, models;
+
+    QJsonArray activeExps;
+    
     preferences["offsetX"] = 0.0f;
     preferences["offsetY"] = 0.6f;
     preferences["stickOffset"] = 45;
@@ -53,7 +56,11 @@ void MoeConfig::initializeConfig(QJsonObject& object)
     preferences["windowWidth"] = 400;
     preferences["lipsyncN"] = 2;
     preferences["scale"] = 1.0f;
-    preferences["expression"] = "";
+    preferences["activeExpressions"] = activeExps;
+
+    QJsonObject colorSchemes;
+    preferences["expColorScheme"] = colorSchemes;
+
     moefans["preferences"] = preferences;
     QJsonArray skins2;
     skin["name"] = "初始";
@@ -224,6 +231,35 @@ QString MoeConfig::getLan()
 int MoeConfig::getFps()
 {
     return moeJson["fps"].toInt();
+}
+
+QStringList MoeConfig::getActiveExpressions()
+{
+    const QString& name = moeJson["current"].toObject()["name"].toString();
+    QJsonObject models = moeJson["models"].toObject();
+    QJsonObject model = models[name].toObject();
+    QJsonObject preferences = model["preferences"].toObject();
+    return preferences["activeExpressions"].toVariant().toStringList();
+}
+
+void MoeConfig::setActiveExpressions(const QString& name, const QStringList &list)
+{
+    QJsonObject models = moeJson["models"].toObject();
+    QJsonObject model = models[name].toObject();
+    QJsonObject preferences = model["preferences"].toObject();
+    preferences["activeExpressions"] = QJsonArray::fromStringList(list);
+    model["preferences"] = preferences;
+    models[name] = model;
+    moeJson["models"] = models;
+}
+
+QJsonObject MoeConfig::getColorSchemes()
+{
+    const QString& name = moeJson["current"].toObject()["name"].toString();
+    QJsonObject models = moeJson["models"].toObject();
+    QJsonObject model = models[name].toObject();
+    QJsonObject preferences = model["preferences"].toObject();
+    return preferences["expColorSchemes"].isNull() ? QJsonObject() : preferences["expColorSchemes"].toObject();
 }
 
 void MoeConfig::setStayOnTop(bool value)

@@ -18,6 +18,7 @@
 #include <QSharedMemory>
 #include <QMessageBox>
 #include <Log.hpp>
+#include <Moe/Moe.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -27,7 +28,15 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    Moe::load("../../Data/moe.dat");
+
     app.setQuitOnLastWindowClosed(false);
+
+    QObject::connect(&app, &QApplication::aboutToQuit,
+                     []()
+                     {
+                         Moe::save("../../Data/moe.dat");
+                     });
 
     QTranslator translator;
     QString locale = QLocale::system().name();
@@ -83,15 +92,17 @@ int main(int argc, char *argv[])
     QObject::connect(win->getWorker(), &LLMTTSWorker::textReceived, &view, &HistoryView::onMsgReceived);
     QObject::connect(win->getWorker(), &LLMTTSWorker::textReceiveFinished, &view, &HistoryView::onMsgReceived);
 
-    QObject::connect(&moeConfig, &MoeConfig::currentModelChanged, [&]()
+    QObject::connect(&moeConfig, &MoeConfig::currentModelChanged,
+                     [&]()
                      {
-        delete win;
-        CubismHelper::Dispose();  // 清除之前 OpenGL 上下文
+                         delete win;
+                         CubismHelper::Dispose(); // 清除之前 OpenGL 上下文
 
-        CubismHelper::Initialize();
-        win = new Live2DWidget();
-        win->initialize(&moeConfig);
-        win->show(); });
+                         CubismHelper::Initialize();
+                         win = new Live2DWidget();
+                         win->initialize(&moeConfig);
+                         win->show();
+                     });
 
     QApplication::exec();
 

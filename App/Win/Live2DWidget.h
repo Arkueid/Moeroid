@@ -4,7 +4,7 @@
 #include <QTimer>
 #include "../Config/MoeConfig.h"
 
-class LAppModel;
+class Model;
 class Input;
 
 #include "../Config/StickState.h"
@@ -15,7 +15,7 @@ class Live2DWidget : public QOpenGLWidget
 {
     Q_OBJECT
 
-    LAppModel* live2DModel;
+    Model* live2DModel;
     int iParamMouthOpenY;
 
     bool cursorEntered; // 光标进入窗口
@@ -46,20 +46,17 @@ class Live2DWidget : public QOpenGLWidget
     int screenHeight;
 
     QTimer configSaveTimer;
-    
-    // dragging 动画
-    const float dragDeltaY;
-    float defaultOffsetY;
-    float offsetX;
-    float offsetY;
-    float offsetYStep;
-    bool playing;
-    float framesThresholdOffsetY;
-    float framesElapsedOffsetY;
 
     MoeConfig* config;
 
     QMenu* menu;
+    QMenu* expMenu;
+
+    long long lastUpdateTime;
+
+    QStringList activeExpressions;
+
+    QString modelName;
 
 public:
     Live2DWidget();
@@ -82,6 +79,10 @@ private:
     void processStick();
     void showInput();
 
+    void loadExraMotions();
+
 public slots:
     void saveConfig() const;
+
+    void onExpMenuTriggered(QAction* action);
 };

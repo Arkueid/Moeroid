@@ -21,6 +21,19 @@
         "qmetaobject": "cpp",
         "qobject": "cpp",
         "qlistwidgetitem": "cpp",
-        "qpropertyanimation": "cpp"
+        "qpropertyanimation": "cpp",
+        "format": "cpp",
+        "random": "cpp",
+        "sstream": "cpp",
+        "xhash": "cpp",
+        "xlocnum": "cpp",
+        "xmemory": "cpp",
+        "xstring": "cpp",
+        "array": "cpp",
+        "span": "cpp",
+        "vector": "cpp",
+        "qstyle": "cpp",
+        "filesystem": "cpp",
+        "xlocinfo": "cpp"
     }
 }

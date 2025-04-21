@@ -59,42 +59,66 @@ else:
     logging.warning(f"invalid lan_val: {lan}")
 logging.info(f"current lan: {lan}")
 
-history = [
-    config.SYSTEM_MESSAGE
-]
+history = []
 
+
+import re
 __text = ""
 
-puctuation = "！。；，？" + ",.;!?"
+sep = ",.;!?" + "，。；！？"
+
+# 所有中英文标点符号
+punctuations = (":;!@#$%^&*()_+-=<>?~`{}|[]\'\"\\/"
+                "：；！？￥……（）——【】“”"
+                )
+
+pat = "[\"“”]"
 
 
 vits_helper.set_current_sid(2)
 vits_helper.init_onnx_model()
 logging.info("task start")
 
+def end_stream():
+    sys.stdout.buffer.write(struct.pack("Q", 0))
+    sys.stdout.buffer.flush()
+    logging.info("stream ends")
+
 def on_response(text: str):
     global __text
 
-    if text == "" and __text == "":
-        sys.stdout.buffer.write(struct.pack("Q", 0))
-        sys.stdout.buffer.flush()
-        return
+    force_gen = False
 
-    t = ""
-    gen = text == ""
+    if text is None:
+        left_text = __text.strip()
+        if left_text == "" or left_text in punctuations:
+            end_stream()
+            return
+        else:
+            force_gen = True
+            text = __text
+
     stopped_i = -1
-    for i, c in enumerate(text):
-        if c in puctuation:
-            gen = True  # 遇到标点符号强制生成
-            t += c
-            stopped_i = i + 1
-            break
-        t += c
+    t = ""
+    if not force_gen:    
+        for i, c in enumerate(text):
+            if c in sep:
+                if i + 1 < len(text) and text[i + 1] in (sep + punctuations):
+                    stopped_i = i + 2
+                else:
+                    stopped_i = i + 1
+                break
+        if stopped_i != -1:
+            t = __text + text[:stopped_i]
+            __text = text[stopped_i:]
+        else:
+            __text += text
+    else:
+        t = text
+        __text = ""
 
-    t = __text + t
-
-    t = t.strip().replace("\n", "")
-    if gen and t != "":
+    t = re.sub(pat, "", t.strip())
+    if t != "":
         logging.info("start tts: " + t)
         try:
             # -- tts start--
@@ -122,18 +146,9 @@ def on_response(text: str):
             ct = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
             chat_db.execute(f"insert into `{table}` values('{t}', 'assistant', '{audio_name}', '{ct}')")
 
-            if text == "":
-                sys.stdout.buffer.write(struct.pack("Q", 0))
-                sys.stdout.buffer.flush()
-
         except Exception as e:
             logging.error(e)
-            sys.stdout.buffer.write(struct.pack("Q", 0))
-            sys.stdout.buffer.flush()
-
-        __text = text[stopped_i:]
-    else:  # 保存供下一次生成
-        __text = t
+            end_stream()
 
 import llm_llama
 
@@ -146,12 +161,12 @@ def processChat():
     chat_db.execute(f"insert into `{table}` values('{text}', 'user', '', '{ct}')")
 
     try:
-        text = f"请用{lan[2]}回复：{text}"
+        text = f"{text}（回复用{lan[2]}）"
         llm_llama.chat_stream(text, history, on_response)
     except Exception as e:
         logging.error(e)
         on_response("抱歉，大模型宕机了...")
-        on_response("")
+        on_response(None)
 
 
 def processSetLan():

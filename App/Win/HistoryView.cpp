@@ -1,9 +1,9 @@
-#include "HistoryView.h"
+#include <Win/HistoryView.h>
 
 #include <Sqlite/sqlite3.h>
 
-#include "Log.hpp"
-#include "Sqlite/SQLite.h"
+#include <Log.hpp>
+#include <Sqlite/SQLite.h>
 #include <Windows.h>
 #include <QDate>
 

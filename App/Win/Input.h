@@ -42,6 +42,7 @@ public:
     void keyPressEvent(QKeyEvent* event) override;
     const LLMTTSWorker* getWorker() const;
     void setAnchor(QWidget* inAnchor);
+    void showEvent(QShowEvent* event) override;
 signals:
     void onInput() const;
 

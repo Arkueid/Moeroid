@@ -1,4 +1,4 @@
-#include <LAppModel.hpp>
+#include <fine-grained/Model.hpp>
 #include <LAppPal.hpp>
 #include <Log.hpp>
 #include <iostream>
@@ -12,7 +12,8 @@
 
 #include <QMenu>
 #include <QActionGroup>
-#include <QStyle>
+#include <QDir>
+#include <QJsonArray>
 
 Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                leftButtonPressed(false),
@@ -31,12 +32,11 @@ Live2DWidget::Live2DWidget() : live2DModel(nullptr),
                                iParamMouthOpenY(-1),
                                cursorEntered(false),
                                cursorOnL2D(true),
-                               config(nullptr),
-                               playing(false),
-                               framesElapsedOffsetY(0),
-                               framesThresholdOffsetY(0),
-                               dragDeltaY(0.08)
+                               config(nullptr)
 {
+
+    setWindowTitle("❤Moe Moe Kyun~❤");
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
     setAttribute(Qt::WA_TranslucentBackground);
 
@@ -84,19 +84,15 @@ void Live2DWidget::initialize(MoeConfig *config)
 
     move(config->getInt("windowX"), config->getInt("windowY"));
 
-    live2DModel = new LAppModel();
+    live2DModel = new Model();
     // restore preferences
     resize(config->getCurrentPreferenceInt("windowWidth"), config->getCurrentPreferenceInt("windowHeight"));
     stickRotate = config->getCurrentPreferenceFloat("stickRotate");
     stickOffset = config->getCurrentPreferenceInt("stickOffset");
-    offsetX = config->getCurrentPreferenceFloat("offsetX");
-    defaultOffsetY = config->getCurrentPreferenceFloat("offsetY");
-    offsetY = defaultOffsetY;
-    live2DModel->SetOffset(offsetX, offsetY);
+    live2DModel->SetOffset(config->getCurrentPreferenceFloat("offsetX"), config->getCurrentPreferenceFloat("offsetY"));
     live2DModel->SetScale(config->getCurrentPreferenceFloat("scale"));
 
-    framesThresholdOffsetY = config->getFps();
-    offsetYStep = dragDeltaY / framesThresholdOffsetY;
+    modelName = config->getCurrentName();
 
     connect(&configSaveTimer, &QTimer::timeout, this, &Live2DWidget::saveConfig);
 }
@@ -106,56 +102,75 @@ const LLMTTSWorker *Live2DWidget::getWorker() const
     return input->getWorker();
 }
 
-// typedef bool(__stdcall *SwapInterval)(int);
+typedef bool(__stdcall *SwapInterval)(int);
 
 void Live2DWidget::initializeGL()
 {
     gladLoadGL();
 
-    // ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
+    ((SwapInterval)wglGetProcAddress("wglSwapIntervalEXT"))(1);
     // load model assets
     const std::string &path = config->getCurrentModelJson().toStdString();
     live2DModel->LoadModelJson(path.c_str());
+
+    loadExraMotions();
+
     const Csm::CubismId *handle = Csm::CubismFramework::GetIdManager()->GetId("ParamMouthOpenY");
     iParamMouthOpenY = live2DModel->GetModel()->GetParameterIndex(handle);
 
-    QString curExp = config->getCurrentPreferenceString("expression");
-    live2DModel->SetExpression(curExp.toStdString().c_str());
+    activeExpressions = config->getActiveExpressions();
+
+    const QJsonObject expColorSchemes = config->getColorSchemes();
+    for (const QString &exp : activeExpressions)
+    {
+        live2DModel->AddExpression(exp.toStdString().c_str());
+        if (!expColorSchemes.isEmpty())
+        {
+            const QJsonArray expColorScheme = expColorSchemes[exp].toArray();
+            for (int i = 0; i < expColorScheme.size(); i++)
+            {
+                const QJsonObject partColor = expColorScheme[i].toObject();
+                const int partIndex = partColor["partIndex"].toInt();
+                const QJsonArray colors = partColor["color"].toArray();
+                float r = colors[0].toDouble();
+                float g = colors[1].toDouble();
+                float b = colors[2].toDouble();
+                live2DModel->SetPartMultiplyColor(partIndex, r, g, b, 1.0f);
+            }
+        }
+    }
 
     menu = new QMenu(this);
-    QMenu *expMenu = menu->addMenu(tr("表情"));
-    QActionGroup *group = new QActionGroup(expMenu);
-    group->setExclusive(true);
-    void *x[3] = {expMenu, group, &curExp};
-    live2DModel->GetExpressionIds(x, [](void *collector, const char *expId)
-                                  {
-        QMenu* expMenu = (QMenu*)((void**)collector)[0];
-        QActionGroup* group = (QActionGroup*)((void**)collector)[1];
-        QAction* action = expMenu->addAction(expId);
-        action->setCheckable(true);
-        const QString& s = (*((QString*)((void**)collector)[2]));
-        if (s != "" && s == expId)
-        {
-            action->setChecked(true);
-        }
-        group->addAction(action); });
-    expMenu->addAction(tr("重置   "));
-    connect(expMenu, &QMenu::triggered, [&](QAction *action)
-            {
-        const std::string s = action->text().toStdString();
-        if (s == "重置   ")
-        {
-            live2DModel->ResetExpression();
-            config->setCurrentPreferenceString("expression", "");
-        }
-        else
-        {
-            config->setCurrentPreferenceString("expression", s.c_str());
-            live2DModel->SetExpression(s.c_str());
-        }
-        configSaveTimer.start(); });
+    QAction *action = menu->addAction(tr("重置参数"));
+    connect(action, &QAction::triggered, [&]()
+            { live2DModel->ResetAllParameters(); });
+    action = menu->addAction(tr("重置姿势"));
+    connect(action, &QAction::triggered, [&]()
+            { live2DModel->ResetPose(); });
+    expMenu = menu->addMenu(tr("表情"));
+    expMenu->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::SyncSynchronizing));
+    void *x[2] = {expMenu, &activeExpressions};
+    live2DModel->GetExpressions(x,
+                                [](void *collector, const char *expId, const char *file)
+                                {
+                                    QMenu *expMenu = (QMenu *)((void **)collector)[0];
+                                    QAction *action = expMenu->addAction(expId);
+                                    action->setCheckable(true);
+                                    QStringList *list = (QStringList *)(((void **)collector)[1]);
+                                    if (list->contains(expId))
+                                    {
+                                        action->setChecked(true);
+                                    }
+                                });
+    action = expMenu->addAction(tr("重置"));
+    action->setData("reset");
+    connect(expMenu, &QMenu::triggered, this, &Live2DWidget::onExpMenuTriggered);
 
     processStick();
+
+    live2DModel->CreateRenderer();
+
+    lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
 
     startTimer(1000 / config->getFps());
 }
@@ -171,10 +186,34 @@ void Live2DWidget::paintGL()
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    live2DModel->Update();
+    long long currentTime = QDateTime::currentMSecsSinceEpoch();
+    float deltaTime = float(((double)QDateTime::currentMSecsSinceEpoch() - (double)lastUpdateTime) / 1000.0);
+    lastUpdateTime = currentTime;
 
-    live2DModel->SetIndexParamValue(iParamMouthOpenY, LipSync::getMouthOpenY());
+    bool motionUpdated = false;
+    live2DModel->LoadParameters();
+    if (!live2DModel->IsMotionFinished())
+    {
+        motionUpdated = live2DModel->UpdateMotion(deltaTime);
+    }
 
+    live2DModel->SetParameterValue(iParamMouthOpenY, LipSync::getMouthOpenY());
+
+    live2DModel->SaveParameters();
+
+    if (!motionUpdated)
+    {
+        live2DModel->UpdateBlink(deltaTime);
+    }
+    live2DModel->UpdateExpression(deltaTime);
+
+    live2DModel->UpdateDrag(deltaTime);
+
+    live2DModel->UpdateBreath(deltaTime);
+
+    live2DModel->UpdatePhysics(deltaTime);
+
+    live2DModel->UpdatePose(deltaTime);
     live2DModel->Draw();
 }
 
@@ -193,24 +232,6 @@ void Live2DWidget::timerEvent(QTimerEvent *event)
     {
         framesElapsedRightPress += 1;
     }
-
-    if (playing)
-    {
-        if (framesElapsedOffsetY == 0.0f)
-        {
-            live2DModel->StartRandomMotion("drag_down", 3);
-        }
-        framesElapsedOffsetY += 1;
-        offsetY -= offsetYStep;
-        if (framesElapsedOffsetY > framesThresholdOffsetY)
-        {
-            framesElapsedOffsetY = 0;
-            offsetY = defaultOffsetY;
-            playing = false;
-        }
-        live2DModel->SetOffset(offsetX, offsetY);
-    }
-
 
     update(); // 更新画面
 }
@@ -236,13 +257,6 @@ void Live2DWidget::mouseMoveEvent(QMouseEvent *event)
             {
                 move(xWhenClicked + dx, yWhenClicked + dy);
             }
-
-            if (!windowMoved)
-            {
-                offsetY = defaultOffsetY + dragDeltaY;
-                live2DModel->SetOffset(offsetX, offsetY);
-            }
-
             windowMoved = true;
         }
         else
@@ -283,13 +297,23 @@ void Live2DWidget::mouseReleaseEvent(QMouseEvent *event)
             configSaveTimer.start();
 
             processStick();
-            playing = true;
+
+#ifdef _DEBUG
+            live2DModel->StartRandomMotion("drag", 3, this, [](ACubismMotion *motion)
+                                           { qDebug() << "drag motion started: " << motion->no; });
+#else
+            live2DModel->StartRandomMotion("drag", 3);
+#endif
         }
         else // 窗口未移动，则响应鼠标点击事件
         {
-            live2DModel->StartRandomMotion(nullptr, 3);
+#ifdef _DEBUG
+            live2DModel->StartRandomMotion("touch", 3, this, [](ACubismMotion *motion)
+                                           { qDebug() << "click motion started: " << motion->no; });
+#else
+            live2DModel->StartRandomMotion("touch", 3);
+#endif
         }
-
     }
     else if (event->button() == Qt::RightButton)
     {
@@ -351,10 +375,11 @@ void Live2DWidget::processDrag(float mx, float my)
 
     const float wWidth = width();
     const float wHeight = height();
-    // 窗口中心全局坐标
+
     const float halfWW = wWidth / 2;
     const float halfWH = wHeight / 2;
 
+    // 窗口中心全局坐标
     // 贴右边缘时窗口中心恰好在屏幕边缘，此时若以窗口中心为分界点，则无法向右看
     float tcx = min(x() + halfWW, screenWidth - (screenWidth - x()) / 2);
     // 左边缘
@@ -371,15 +396,15 @@ void Live2DWidget::processDrag(float mx, float my)
         else // 第三象限
         {
             ftx = mx / max(tcx, 1.f) * halfWW;
-            fty = (my - tcy) / max(screenHeight - tcy, 1.f) * halfWW + halfWW;
+            fty = (my - tcy) / max(abs(screenHeight - tcy), 1.f) * halfWW + halfWW;
         }
     }
     else
     {
-        if (my <= tcy) // 第四象限
+        if (my > tcy) // 第四象限
         {
             ftx = (mx - tcx) / max(screenWidth - tcx, 1.f) * halfWW + halfWW;
-            fty = (my - tcy) / max(screenHeight - tcy, 1.f) * halfWH + halfWH;
+            fty = (my - tcy) / max(abs(screenHeight - tcy), 1.f) * halfWH + halfWH;
         }
         else // 第一象限
         {
@@ -435,10 +460,92 @@ void Live2DWidget::showInput()
     input->show();
 }
 
+void Live2DWidget::loadExraMotions()
+{
+    const QString path = config->getString("modelDir");
+    QDir dir(path + "/public_motions");
+    int touchIndex = 0;
+    int dragIndex = 0;
+    for (const QString &file : dir.entryList(QDir::Files)) // 加载公共动作
+    {
+        if (file.endsWith(".motion3.json"))
+        {
+            if (file.startsWith("touch"))
+            {
+                const std::string mtnPath = dir.absoluteFilePath(file).toStdString();
+                live2DModel->LoadExtraMotion("touch", touchIndex++, mtnPath.c_str());
+            }
+            else if (file.startsWith("drag"))
+            {
+                const std::string mtnPath = dir.absoluteFilePath(file).toStdString();
+                live2DModel->LoadExtraMotion("drag", dragIndex++, mtnPath.c_str());
+            }
+        }
+    }
+}
+
+void Live2DWidget::onExpMenuTriggered(QAction *action)
+{
+    const QString s = action->data().toString();
+    const std::string expId = action->text().toStdString();
+    if (s == "reset")
+    {
+        expMenu->disconnect();
+        for (auto &action : expMenu->actions()) // 重置菜单
+        {
+            action->setChecked(false);
+        }
+        live2DModel->ResetExpressions();
+        activeExpressions.clear();
+        connect(expMenu, &QMenu::triggered, this, &Live2DWidget::onExpMenuTriggered);
+    }
+    else if (!action->isChecked())
+    {
+        live2DModel->RemoveExpression(expId.c_str());
+        activeExpressions.removeAll(expId.c_str());
+        // qDebug() << "reset expression";
+
+        const QJsonObject expColorSchemes = config->getColorSchemes();
+        if (!expColorSchemes.isEmpty())
+        {
+            const QJsonArray expColorScheme = expColorSchemes[expId.c_str()].toArray();
+            for (int i = 0; i < expColorScheme.size(); i++)
+            {
+                const QJsonObject partColor = expColorScheme[i].toObject();
+                const int partIndex = partColor["partIndex"].toInt();
+                live2DModel->SetPartMultiplyColor(partIndex, 1.0f, 1.0f, 1.0f, 1.0f);
+            }
+        }
+    }
+    else
+    {
+        live2DModel->AddExpression(expId.c_str());
+        activeExpressions.append(expId.c_str());
+
+        const QJsonObject expColorSchemes = config->getColorSchemes();
+        if (!expColorSchemes.isEmpty())
+        {
+            const QJsonArray expColorScheme = expColorSchemes[expId.c_str()].toArray();
+            for (int i = 0; i < expColorScheme.size(); i++)
+            {
+                const QJsonObject partColor = expColorScheme[i].toObject();
+                const int partIndex = partColor["partIndex"].toInt();
+                const QJsonArray colors = partColor["color"].toArray();
+                float r = colors[0].toDouble();
+                float g = colors[1].toDouble();
+                float b = colors[2].toDouble();
+                live2DModel->SetPartMultiplyColor(partIndex, r, g, b, 1.0f);
+            }
+        }
+    }
+    configSaveTimer.start();
+}
+
 void Live2DWidget::saveConfig() const
 {
     config->setInt("windowX", x());
     config->setInt("windowY", y());
+    config->setActiveExpressions(modelName, activeExpressions);
     config->writeFile();
     Info("config saved.");
 }
