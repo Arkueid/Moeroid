@@ -10,7 +10,9 @@
 static double lastFrame = -1.0;
 static double currentFrame = 0.0f;
 static double delta;
-static float lipSyncN = 1.0f;
+static float lipSyncN = 1.2f;
+static float mouthOpenY = 0.0f;
+static float weight = 0.5f;
 
 LAppWavFileHandler* LipSync::wavHandler = nullptr;
 
@@ -39,7 +41,8 @@ float LipSync::getMouthOpenY()
 
     if (wavHandler->Update(delta))
     {
-        return wavHandler->GetRms() * lipSyncN;
+        mouthOpenY = mouthOpenY * (1 - weight) + weight * (wavHandler->GetRms() * lipSyncN);
+        return mouthOpenY;
     }
     return 0.0f;
 }

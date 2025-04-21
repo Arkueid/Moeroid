@@ -29,16 +29,20 @@ puctuation = ";!?！。；，？"
 def on_response(text: str):
     global __text
 
+    if text is None and __text == "":
+        return
+
     t = ""
-    gen = text == ""
+    gen = text is None
     stopped_i = -1
-    for i, c in enumerate(text):
-        if c in puctuation:
-            gen = True  # 遇到标点符号强制生成
+    if text is not None:
+        for i, c in enumerate(text):
+            if c in puctuation:
+                gen = True  # 遇到标点符号强制生成
+                t += c
+                stopped_i = i + 1
+                break
             t += c
-            stopped_i = i + 1
-            break
-        t += c
 
     t = __text + t
 
@@ -60,7 +64,7 @@ def on_response(text: str):
 
 import llm_llama
 import config
-history = [config.SYSTEM_MESSAGE]
+history = []
 while True:
     x = input(">>>")
     llm_llama.chat_stream(x, history, on_response)

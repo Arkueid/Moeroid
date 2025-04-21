@@ -1,6 +1,7 @@
 #pragma once
 #include <QJsonObject>
 #include "Process/PythonProcess.h"
+#include <QStringList>
 
 class MoeConfig : public QObject
 {
@@ -54,6 +55,12 @@ public:
     QString getLan();
 
     int getFps();
+
+    QStringList getActiveExpressions();
+
+    void setActiveExpressions(const QStringList&);
+
+    QJsonObject getColorSchemes();
 
 signals:
     void stayOnTopChanged(bool);

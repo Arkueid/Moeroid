@@ -27,6 +27,13 @@
         "sstream": "cpp",
         "xhash": "cpp",
         "xlocnum": "cpp",
-        "xmemory": "cpp"
+        "xmemory": "cpp",
+        "xstring": "cpp",
+        "array": "cpp",
+        "span": "cpp",
+        "vector": "cpp",
+        "qstyle": "cpp",
+        "filesystem": "cpp",
+        "xlocinfo": "cpp"
     }
 }

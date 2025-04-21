@@ -7,6 +7,8 @@ About::About(QWidget *parent)
     ui.setupUi(this);
     setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
 
+    setWindowModality(Qt::ApplicationModal);
+
     updateTimer.setInterval(1000);
     updateTimer.setSingleShot(false);
     connect(&updateTimer, &QTimer::timeout, this, &About::onUpdate);
