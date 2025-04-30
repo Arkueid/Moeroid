@@ -81,6 +81,10 @@ private:
 
     void loadExraMotions();
 
+    void setColorScheme(const QJsonArray& expColorScheme);
+
+    void clearColorScheme(const QJsonArray& expColorScheme);
+
 public slots:
     void saveConfig() const;
 

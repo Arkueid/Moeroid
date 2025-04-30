@@ -1,4 +1,4 @@
-import live2d.v3 as live2d
+from live2d import v3 as live2d
 import pygame
 import os
 import time
@@ -23,13 +23,22 @@ model.AddExpression("发色")
 
 partIds = model.GetPartIds()
 
-for i in ['Part4', 'Part5', 'ArtMesh207_Skinning', 'ArtMesh208_Skinning', 'ArtMesh209_Skinning', 'ArtMesh213_Skinning', 'ArtMesh212_Skinning', 'ArtMesh214_Skinning', 'ArtMesh211_Skinning','ArtMesh210_Skinning', 'ArtMesh215_Skinning', 'ArtMesh216_Skinning', 'ArtMesh217_Skinning',
+drawableIds = model.GetDrawableIds()
+
+for i in ['ArtMesh207_Skinning', 'ArtMesh208_Skinning', 'ArtMesh209_Skinning', 'ArtMesh213_Skinning', 'ArtMesh212_Skinning', 'ArtMesh214_Skinning', 'ArtMesh211_Skinning','ArtMesh210_Skinning', 'ArtMesh215_Skinning', 'ArtMesh216_Skinning', 'ArtMesh217_Skinning',
           'ArtMesh218_Skinning' 
           ]:
     model.SetPartMultiplyColor(partIds.index(i), 212/255, 94/255, 116/255, 1.0)
     print({"partIndex": partIds.index(i), "color": [212/255, 94/255, 116/255, 1.0]}, end=',\n')
 
+model.SetDrawableMultiplyColor(drawableIds.index('ArtMesh13'), 212/255, 94/255, 116/255, 1.0)
+print({"drawableIndex": drawableIds.index('ArtMesh13'), "color": [212/255, 94/255, 116/255, 1.0]}, end=',\n')
+model.SetDrawableMultiplyColor(drawableIds.index('ArtMesh16'), 212/255, 94/255, 116/255, 1.0)
+print({"drawableIndex": drawableIds.index('ArtMesh16'), "color": [212/255, 94/255, 116/255, 1.0]}, end=',\n')
+
 print(212/255, 94/255, 116/255)
+
+model.LoadExtraMotion("extra", 0, os.path.join(cd, "extra.motion3.json"))
 
 running = True
 while True:
@@ -38,9 +47,9 @@ while True:
             running = False
             break
         if event.type == pygame.MOUSEBUTTONUP:
-            # model.StartRandomMotion()
+            model.StartRandomMotion("extra")
             x, y = event.pos
-            print(model.HitPart(x, y, False))
+            print(model.HitDrawable(x, y, True))
             
     
     if not running:

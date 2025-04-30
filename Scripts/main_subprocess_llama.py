@@ -67,12 +67,11 @@ __text = ""
 
 sep = ",.;!?" + "，。；！？"
 
-# 所有中英文标点符号
-punctuations = (":;!@#$%^&*()_+-=<>?~`{}|[]\'\"\\/"
-                "：；！？￥……（）——【】“”"
+# 非终止符标点符号
+punctuations = (":@#$%^&*()_+-=<>~`{}|[]\'\"\\/"
+                "：￥……（）——【】“”"
                 )
-
-pat = "[\"“”]"
+all_punc = sep + punctuations
 
 
 vits_helper.set_current_sid(2)
@@ -91,7 +90,7 @@ def on_response(text: str):
 
     if text is None:
         left_text = __text.strip()
-        if left_text == "" or left_text in punctuations:
+        if left_text == "" or left_text in all_punc:
             end_stream()
             return
         else:
@@ -103,10 +102,12 @@ def on_response(text: str):
     if not force_gen:    
         for i, c in enumerate(text):
             if c in sep:
-                if i + 1 < len(text) and text[i + 1] in (sep + punctuations):
-                    stopped_i = i + 2
-                else:
-                    stopped_i = i + 1
+                stopped_i = i + 1
+                for next_c in text[i+1:]:
+                    if next_c in all_punc:
+                        stopped_i += 1
+                    else:
+                        break
                 break
         if stopped_i != -1:
             t = __text + text[:stopped_i]
@@ -117,7 +118,8 @@ def on_response(text: str):
         t = text
         __text = ""
 
-    t = re.sub(pat, "", t.strip())
+    t = re.sub(r'<think>[\w\W]*?</think>', '', t.strip(), 1)
+    t = t.strip()
     if t != "":
         logging.info("start tts: " + t)
         try:
@@ -200,5 +202,3 @@ while True:
     except Exception as e:
         logging.error(e)
         continue
-
-    

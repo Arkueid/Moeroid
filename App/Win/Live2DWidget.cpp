@@ -127,15 +127,9 @@ void Live2DWidget::initializeGL()
         if (!expColorSchemes.isEmpty())
         {
             const QJsonArray expColorScheme = expColorSchemes[exp].toArray();
-            for (int i = 0; i < expColorScheme.size(); i++)
+            if (expColorScheme.size() > 0)
             {
-                const QJsonObject partColor = expColorScheme[i].toObject();
-                const int partIndex = partColor["partIndex"].toInt();
-                const QJsonArray colors = partColor["color"].toArray();
-                float r = colors[0].toDouble();
-                float g = colors[1].toDouble();
-                float b = colors[2].toDouble();
-                live2DModel->SetPartMultiplyColor(partIndex, r, g, b, 1.0f);
+                setColorScheme(expColorScheme);
             }
         }
     }
@@ -484,6 +478,47 @@ void Live2DWidget::loadExraMotions()
     }
 }
 
+void Live2DWidget::setColorScheme(const QJsonArray &expColorScheme)
+{
+    const int size = expColorScheme.size();
+    for (int i = 0; i < size; i++)
+    {
+        const QJsonObject partColor = expColorScheme[i].toObject();
+        const QJsonArray colors = partColor["color"].toArray();
+        float r = colors[0].toDouble();
+        float g = colors[1].toDouble();
+        float b = colors[2].toDouble();
+        if (partColor.contains("partIndex"))
+        {
+            const int partIndex = partColor["partIndex"].toInt();
+            live2DModel->SetPartMultiplyColor(partIndex, r, g, b, 1.0f);
+        }
+        else if (partColor.contains("drawableIndex"))
+        {
+            const int drawableIndex = partColor["drawableIndex"].toInt();
+            live2DModel->SetDrawableMultiplyColor(drawableIndex, r, g, b, 1.0f);
+        }
+    }
+}
+
+void Live2DWidget::clearColorScheme(const QJsonArray &expColorScheme)
+{
+    for (int i = 0; i < expColorScheme.size(); i++)
+    {
+        const QJsonObject partColor = expColorScheme[i].toObject();
+        if (partColor.contains("partIndex"))
+        {
+            const int partIndex = partColor["partIndex"].toInt();
+            live2DModel->SetPartMultiplyColor(partIndex, 1.0f, 1.0f, 1.0f, 1.0f);
+        }
+        else if (partColor.contains("drawableIndex"))
+        {
+            const int drawableIndex = partColor["drawableIndex"].toInt();
+            live2DModel->SetDrawableMultiplyColor(drawableIndex, 1.0f, 1.0f, 1.0f, 1.0f);
+        }
+    }
+}
+
 void Live2DWidget::onExpMenuTriggered(QAction *action)
 {
     const QString s = action->data().toString();
@@ -509,11 +544,9 @@ void Live2DWidget::onExpMenuTriggered(QAction *action)
         if (!expColorSchemes.isEmpty())
         {
             const QJsonArray expColorScheme = expColorSchemes[expId.c_str()].toArray();
-            for (int i = 0; i < expColorScheme.size(); i++)
+            if (expColorScheme.size() > 0)
             {
-                const QJsonObject partColor = expColorScheme[i].toObject();
-                const int partIndex = partColor["partIndex"].toInt();
-                live2DModel->SetPartMultiplyColor(partIndex, 1.0f, 1.0f, 1.0f, 1.0f);
+                clearColorScheme(expColorScheme);
             }
         }
     }
@@ -526,15 +559,9 @@ void Live2DWidget::onExpMenuTriggered(QAction *action)
         if (!expColorSchemes.isEmpty())
         {
             const QJsonArray expColorScheme = expColorSchemes[expId.c_str()].toArray();
-            for (int i = 0; i < expColorScheme.size(); i++)
+            if (expColorScheme.size() > 0)
             {
-                const QJsonObject partColor = expColorScheme[i].toObject();
-                const int partIndex = partColor["partIndex"].toInt();
-                const QJsonArray colors = partColor["color"].toArray();
-                float r = colors[0].toDouble();
-                float g = colors[1].toDouble();
-                float b = colors[2].toDouble();
-                live2DModel->SetPartMultiplyColor(partIndex, r, g, b, 1.0f);
+                setColorScheme(expColorScheme);
             }
         }
     }

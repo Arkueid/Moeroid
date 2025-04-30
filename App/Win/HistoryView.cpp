@@ -13,7 +13,7 @@ HistoryView::HistoryView(const QString &path)
 
     ui.setupUi(this);
 
-    setWindowFlags(Qt::Tool);
+    setWindowFlags(Qt::Tool|Qt::WindowStaysOnTopHint);
 
     ui.messageList->setWordWrap(true);
 

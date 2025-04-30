@@ -17,7 +17,6 @@ def chat_stream(text: str, history: list[dict] = [], on_response: Callable[[str]
     data = {
         "messages": history,
         "stream": True,
-        "temperature": 0.95
     }
     start_time = time.time()
     rsp = requests.post(url, json=data, stream=True)
